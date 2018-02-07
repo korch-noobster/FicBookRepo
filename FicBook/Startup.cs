@@ -13,6 +13,7 @@ using FicBook.Models;
 using FicBook.Services;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.Extensions.FileProviders;
 
 namespace FicBook
 {
