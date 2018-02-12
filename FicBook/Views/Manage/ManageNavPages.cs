@@ -19,7 +19,11 @@ namespace FicBook.Views.Manage
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
+        public static string UserList => "UserList";
+
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
+
+        public static string UserListNavClass(ViewContext viewContext) => PageNavClass(viewContext, UserList);
 
         public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
 

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<FicBook.Models.ApplicationUser>
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Users";
+    ViewData.AddActivePage(ManageNavPages.UserList);
+}
+<h2>Users</h2>
+
+<table class="table">
+    @foreach (var user in Model)
+    {
+        if (UserManager.GetUserName(User) != user.UserName)
+        {
+        <tr>
+            <td>@user.Email</td>
+            <td>
+                <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-userid="@user.Id">Edit</a>
+              @if(await UserManager.IsInRoleAsync(user,"Author"))
+                {
+                <a class="btn btn-sm btn-success" asp-action="SetAdmin" asp-route-userid="@user.Id">Set as Admin</a>
+                }
+                <a class="btn btn-danger" asp-action="Delete" asp-route-userid="@user.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    }
+</table>

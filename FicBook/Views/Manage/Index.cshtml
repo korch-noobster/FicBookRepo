@@ -1,4 +1,5 @@
 ﻿@model IndexViewModel
+
 @{
     ViewData["Title"] = "Profile";
     ViewData.AddActivePage(ManageNavPages.Index);
@@ -10,15 +11,21 @@
     <div class="col-md-6">
         <form method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
-           
             <div class="form-group">
                 <label asp-for="Username"></label>
                 <input asp-for="Username" class="form-control" disabled />
             </div>
             <div class="form-group">
+                <label asp-for="NewUsername"></label>
+                <div class="input-group">
+                    <input asp-for="NewUsername" class="form-control"  />
+                    <input class="btn btn-danger" asp-action="Delete" asp-route-userid="">Delete</input>
+                    </div>
+            </div>
+            <div class="form-group">
                 <label asp-for="Email"></label>
                     <div class="input-group">
-                        <input asp-for="Email" class="form-control" />
+                        <input asp-for="Email" class="form-control" disabled />
                         <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
                     </div>
             </div>

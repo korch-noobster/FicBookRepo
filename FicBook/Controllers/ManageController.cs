@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using FicBook.Models;
 using FicBook.Models.ManageViewModels;
 using FicBook.Services;
+using FicBook.Data;
 
 namespace FicBook.Controllers
 {
@@ -20,6 +21,7 @@ namespace FicBook.Controllers
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -31,10 +33,12 @@ namespace FicBook.Controllers
         public ManageController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
+          RoleManager<IdentityRole> roleManager,
           IEmailSender emailSender,
-          ILogger<ManageController> logger,
+        ILogger<ManageController> logger,
           UrlEncoder urlEncoder)
         {
+            _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -42,6 +46,72 @@ namespace FicBook.Controllers
             _urlEncoder = urlEncoder;
         }
 
+        public async Task<IActionResult> Delete(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction("UserList");
+
+        }
+
+        public IActionResult RolesIndex() => View(_roleManager.Roles.ToList());
+
+        public IActionResult UserList() => View(_userManager.Users.ToList());
+
+        public async Task<IActionResult> Edit(string userId)
+        {
+            // получаем пользователя
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                // получем список ролей пользователя
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var allRoles = _roleManager.Roles.ToList();
+                EditRolesViewModel model = new EditRolesViewModel
+                {
+                    UserId = user.Id,
+                    UserEmail = user.Email,
+                    UserRoles = userRoles,
+                    AllRoles = allRoles
+                };
+                return View(model);
+            }
+
+            return NotFound();
+        }
+      
+        public async Task<IActionResult> SetAdmin(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            await _userManager.RemoveFromRoleAsync(user, "Author");
+            await _userManager.AddToRoleAsync(user, "Admin");
+            return RedirectToAction("UserList");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(string userId, List<string> roles)
+        {
+            // получаем пользователя
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                // получем список ролей пользователя
+                var userRoles = await _userManager.GetRolesAsync(user);
+                // получаем все роли
+                var allRoles = _roleManager.Roles.ToList();
+                // получаем список ролей, которые были добавлены
+                var addedRoles = roles.Except(userRoles);
+                // получаем роли, которые были удалены
+                var removedRoles = userRoles.Except(roles);
+
+                await _userManager.AddToRolesAsync(user, addedRoles);
+
+                await _userManager.RemoveFromRolesAsync(user, removedRoles);
+
+                return RedirectToAction("UserList");
+            }
+
+            return NotFound();
+        }
         [TempData]
         public string StatusMessage { get; set; }
 

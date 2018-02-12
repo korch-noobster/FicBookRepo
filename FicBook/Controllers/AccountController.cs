@@ -31,7 +31,7 @@ namespace FicBook.Controllers
             IEmailSender emailSender,
             ILogger<AccountController> logger)
         {
-            _userManager = userManager;
+            _userManager = userManager; 
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
@@ -122,6 +122,7 @@ namespace FicBook.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Author");
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Action(
                         "ConfirmEmail",
