@@ -46,12 +46,38 @@ namespace FicBook.Controllers
             _urlEncoder = urlEncoder;
         }
 
+
         public async Task<IActionResult> Delete(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             await _userManager.DeleteAsync(user);
             return RedirectToAction("UserList");
 
+        }
+
+        public async Task<IActionResult> ChangeLockout(string userId)
+        {
+            var lockoutEndDate = new DateTime(2999, 01, 01);
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user.LockoutEnabled)
+            {
+                await _userManager.SetLockoutEnabledAsync(user, false);
+            }
+            else
+            {
+                await _userManager.SetLockoutEnabledAsync(user, true);
+                await  _userManager.SetLockoutEndDateAsync(user, lockoutEndDate);
+            }
+            return RedirectToAction("UserList");
+        }
+
+        public async Task<IActionResult> SetAdmin(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            await _userManager.RemoveFromRoleAsync(user, "Author");
+            await _userManager.AddToRoleAsync(user, "Admin");
+            return RedirectToAction("UserList");
         }
 
         public IActionResult RolesIndex() => View(_roleManager.Roles.ToList());
@@ -80,13 +106,7 @@ namespace FicBook.Controllers
             return NotFound();
         }
       
-        public async Task<IActionResult> SetAdmin(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            await _userManager.RemoveFromRoleAsync(user, "Author");
-            await _userManager.AddToRoleAsync(user, "Admin");
-            return RedirectToAction("UserList");
-        }
+       
         [HttpPost]
         public async Task<IActionResult> Edit(string userId, List<string> roles)
         {
@@ -112,6 +132,7 @@ namespace FicBook.Controllers
 
             return NotFound();
         }
+
         [TempData]
         public string StatusMessage { get; set; }
 
@@ -207,6 +228,7 @@ namespace FicBook.Controllers
             return View(model);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -235,6 +257,48 @@ namespace FicBook.Controllers
 
             return RedirectToAction(nameof(ChangePassword));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangeUsername()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+           
+            var model = new IndexViewModel { StatusMessage = StatusMessage , Username=user.UserName, Email=user.Email};
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(IndexViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var changeUsernameResult = await _userManager.SetUserNameAsync(user, model.NewUsername);
+            if (!changeUsernameResult.Succeeded)
+            {
+                AddErrors(changeUsernameResult);
+                return View(model);
+            }
+            
+            _logger.LogInformation("User changed their username successfully.");
+            StatusMessage = "Your username has been changed.";
+
+            return RedirectToAction(nameof(ChangePassword));
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> SetPassword()
@@ -364,7 +428,7 @@ namespace FicBook.Controllers
             StatusMessage = "The external login was removed.";
             return RedirectToAction(nameof(ExternalLogins));
         }
-        
+
 
         #region Helpers
 
@@ -375,33 +439,6 @@ namespace FicBook.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
-
-        private string FormatKey(string unformattedKey)
-        {
-            var result = new StringBuilder();
-            int currentPosition = 0;
-            while (currentPosition + 4 < unformattedKey.Length)
-            {
-                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
-                currentPosition += 4;
-            }
-            if (currentPosition < unformattedKey.Length)
-            {
-                result.Append(unformattedKey.Substring(currentPosition));
-            }
-
-            return result.ToString().ToLowerInvariant();
-        }
-
-        private string GenerateQrCodeUri(string email, string unformattedKey)
-        {
-            return string.Format(
-                AuthenicatorUriFormat,
-                _urlEncoder.Encode("FicBook"),
-                _urlEncoder.Encode(email),
-                unformattedKey);
-        }
-
         #endregion
     }
 }

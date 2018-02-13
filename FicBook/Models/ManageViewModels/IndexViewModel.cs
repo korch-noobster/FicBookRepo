@@ -10,6 +10,7 @@ namespace FicBook.Models.ManageViewModels
     {
         public string Username { get; set; }
 
+        [Display(Name = "New Username")]
         public string NewUsername { get; set; }
 
         public bool IsEmailConfirmed { get; set; }

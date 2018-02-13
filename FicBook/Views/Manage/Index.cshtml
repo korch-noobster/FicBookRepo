@@ -17,10 +17,11 @@
             </div>
             <div class="form-group">
                 <label asp-for="NewUsername"></label>
-                <div class="input-group">
-                    <input asp-for="NewUsername" class="form-control"  />
-                    <input class="btn btn-danger" asp-action="Delete" asp-route-userid="">Delete</input>
-                    </div>
+                <div class="form-inline">
+                    <input asp-for="NewUsername" class="form-control" />
+                    <button type="submit" class="btn btn-default">Update username</button>
+                </div>
+               
             </div>
             <div class="form-group">
                 <label asp-for="Email"></label>

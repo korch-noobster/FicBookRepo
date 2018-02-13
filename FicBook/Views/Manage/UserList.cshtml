@@ -20,6 +20,14 @@
                 <a class="btn btn-sm btn-success" asp-action="SetAdmin" asp-route-userid="@user.Id">Set as Admin</a>
                 }
                 <a class="btn btn-danger" asp-action="Delete" asp-route-userid="@user.Id">Delete</a>
+                @if (await UserManager.IsLockedOutAsync(user))
+                {
+                    <a class="btn btn-success" asp-action="ChangeLockout" asp-route-userid="@user.Id">Unlock user</a>
+                }
+                else
+                {
+                    <a class="btn btn-danger" asp-action="ChangeLockout" asp-route-userid="@user.Id">Block user</a>
+                }
             </td>
         </tr>
         }
