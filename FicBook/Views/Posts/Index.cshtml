@@ -1,0 +1,29 @@
+﻿@model IEnumerable<FicBook.Models.Post>
+@{
+    ViewData["Title"] = "Fanfics";
+}
+<h3>This is what we have been writing...</h3>
+<div class="container">
+    <ul class="col-md-8 list-unstyled article-list">
+        @foreach (var post in Model)
+        {
+            <li>
+                @Html.Partial("_PostSummary", post)
+            </li>
+        }
+    </ul>
+    <div class="col-md-4">
+        <div class="container-fluid sidebar">
+            @if (User.IsInRole("Author") || User.IsInRole("Admin"))
+            {<div class="row">
+                <a asp-action="Create" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Write a new Article
+                </a>
+            </div>
+            }
+            <div class="row">
+                @await Component.InvokeAsync("LatestPosts", new { howMany = 2 })
+            </div>
+        </div>
+    </div>
+</div>

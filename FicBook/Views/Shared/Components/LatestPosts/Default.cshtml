@@ -1,0 +1,12 @@
+﻿@model IEnumerable<FicBook.Models.Post>
+<div class="last-articles">
+    <h4>Latest articles:</h4>
+    <ul class="list-unstyled last-articles-list">
+        @foreach (var post in Model)
+        {
+            <li>
+                @Html.Partial("_PostSummary", post)
+            </li>
+        }
+    </ul>
+</div>

@@ -8,21 +8,23 @@ namespace FicBook.Models
 {
     public class Post
     {
-        [Required]
-        public string ID { get; set; } = DateTime.UtcNow.Ticks.ToString();
+        
+        public int ID { get; set; } 
 
         [Required]
         public string Title { get; set; }
 
-        public string Slug { get; set; }
-
         [Required]
-        public string Excerpt { get; set; }
-
+        public string Abstract { get; set; }
+        // public string Slug { get; set; }
         [Required]
         public string Content { get; set; }
 
-        public DateTime PubDate { get; set; } = DateTime.UtcNow;
+        public string UserId { get; set; }
+
+        public virtual ApplicationUser Author { get; set; }
+
+        public DateTime CreatedDate { get; set; }
 
         public DateTime LastModified { get; set; } = DateTime.UtcNow;
 
