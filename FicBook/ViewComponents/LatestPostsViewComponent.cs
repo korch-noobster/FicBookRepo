@@ -17,7 +17,7 @@ namespace FicBook.ViewComponents
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(int howMany = 2)
+        public async Task<IViewComponentResult> InvokeAsync(int howMany )
         {
             var lastPost = await _context.Posts
                                             .OrderByDescending(a => a.CreatedDate)

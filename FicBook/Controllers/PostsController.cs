@@ -27,7 +27,7 @@ namespace FicBook.Controllers
             var applicationDbContext = _context.Posts.Include(a=>a.Author);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -57,8 +57,8 @@ namespace FicBook.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                post.UserId = _userManager.GetUserId(User);
+                post.Author = await _userManager.GetUserAsync(User);
+                //post.UserId = _userManager.GetUserId(User);
                 post.CreatedDate = DateTime.Now;
                  _context.Add(post);
                 await _context.SaveChangesAsync();

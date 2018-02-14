@@ -22,13 +22,11 @@ namespace FicBook.Models
 
         public string UserId { get; set; }
 
-        public virtual ApplicationUser Author { get; set; }
+        public  ApplicationUser Author { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
         public DateTime LastModified { get; set; } = DateTime.UtcNow;
-
-        public bool IsPublished { get; set; } = true;
 
     }
 }

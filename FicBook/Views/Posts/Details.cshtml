@@ -1,4 +1,5 @@
 ﻿@model FicBook.Models.Post
+
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -8,9 +9,13 @@
         <hr />
         <markdown source="@Model.Content"></markdown>
     </div>
+
     <div class="col-md-4">
         <div class="container-fluid sidebar">
-            <div class="row">
+           @if (User.IsInRole("Admin")) 
+              
+           {
+               <div class="row">
                 <div class="btn-group">
                     <a asp-action="Create" class="btn btn-primary">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Write a new Article
@@ -25,9 +30,13 @@
                     </ul>
                 </div>
             </div>
+           }
             <div class="row">
-                @await Component.InvokeAsync("LatestPosts", new { howMany = 2 })
+                @await Component.InvokeAsync("LatestPosts", new { howMany = 3 })
             </div>
         </div>
+    </div>
+    <div>
+        <a asp-action="Index">Back to List</a>
     </div>
 </div>

@@ -5,12 +5,9 @@
 <h3>This is what we have been writing...</h3>
 <div class="container">
     <ul class="col-md-8 list-unstyled article-list">
-        @foreach (var post in Model)
-        {
-            <li>
-                @Html.Partial("_PostSummary", post)
-            </li>
-        }
+        <li class="row">
+            @await Component.InvokeAsync("LatestPosts", new { howMany = 15 })
+        </li>
     </ul>
     <div class="col-md-4">
         <div class="container-fluid sidebar">
@@ -21,9 +18,7 @@
                 </a>
             </div>
             }
-            <div class="row">
-                @await Component.InvokeAsync("LatestPosts", new { howMany = 2 })
-            </div>
+          
         </div>
     </div>
 </div>

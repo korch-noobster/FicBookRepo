@@ -3,9 +3,8 @@
     <div class="col-md-4">
         <profile-picture profile="@Model.Author" size-px="40" />
         <p class="text-center author-name">
-           @* @(Model.Author.FullName ?? Model.Author.UserName)
-        @* <p>  @Model.Author.FullName</p>*@
-        </p>
+           @*@(Model.Author.FullName ?? Model.Author.UserName)*@
+            @Html.DisplayFor(model => model.Author.UserName)
         <p class="text-center">
             @Model.CreatedDate.ToString("dd MMM yyyy")
         </p>

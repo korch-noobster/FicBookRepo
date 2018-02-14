@@ -7,5 +7,6 @@ namespace FicBook.Models
 {
     public class Tag
     {
+
     }
 }
