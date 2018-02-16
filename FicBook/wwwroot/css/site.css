@@ -33,3 +33,12 @@
         display: none;
     }
 }
+
+.navbar .profile-picture {
+    line-height: 50px;
+}
+
+.profile-picture img {
+    vertical-align: middle;
+    border-radius: 50%;
+}

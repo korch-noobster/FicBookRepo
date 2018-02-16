@@ -10,18 +10,19 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace FicBook.Controllers
-{
+{   
     public class PostsController: Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         
-        public PostsController(ApplicationDbContext context,UserManager<ApplicationUser> userManager)
+        public PostsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
+    
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Posts.Include(a=>a.Author);
@@ -36,6 +37,7 @@ namespace FicBook.Controllers
             }
 
             var post = await _context.Posts.Include(a => a.Author).SingleOrDefaultAsync(m => m.ID == id);
+           
             if (post == null)
             {
                 return NotFound();

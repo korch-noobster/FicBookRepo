@@ -13,8 +13,7 @@
     }
     @if (User.IsInRole("Admin"))
     {
-        <li class="@ManageNavPages.UserListNavClass(ViewContext)"><a asp-action="UserLIst">Users</a></li>
-        //<li><a asp-action="UserList">Users</a></li>
+        <li class="@ManageNavPages.UserListNavClass(ViewContext)"><a asp-action="UserLIst">Users</a></li> 
     }
 </ul>
 

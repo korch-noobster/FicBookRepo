@@ -12,12 +12,17 @@
 
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.VK" Version="0.0.1" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.1.1" />
+    <PackageReference Include="dropzone" Version="4.2.0" />
+    <PackageReference Include="Imgur.API" Version="4.0.1" />
+    <PackageReference Include="jQuery.filedrop" Version="1.0.1" />
     <PackageReference Include="MailKit" Version="2.0.1" />
     <PackageReference Include="Markdown" Version="2.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />
     <PackageReference Include="TagHelperSamples.Markdown" Version="2.0.30" />
+  <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.0-alpha2-final" />
   </ItemGroup>
 
   <ItemGroup>

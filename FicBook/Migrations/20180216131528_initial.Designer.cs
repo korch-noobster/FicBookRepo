@@ -11,7 +11,7 @@ using System;
 namespace FicBook.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180213135457_initial")]
+    [Migration("20180216131528_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,6 +28,8 @@ namespace FicBook.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<bool>("AskVerified");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -36,7 +38,7 @@ namespace FicBook.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FullName");
+                    b.Property<string>("ImagePasport");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -54,7 +56,7 @@ namespace FicBook.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<string>("PictureUrl");
+                    b.Property<string>("ProfilePicture");
 
                     b.Property<string>("SecurityStamp");
 
@@ -81,7 +83,20 @@ namespace FicBook.Migrations
                     b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AuthorId");
+
+                    b.Property<int?>("CommentedPostID");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("Text")
+                        .IsRequired();
+
                     b.HasKey("CommentId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("CommentedPostID");
 
                     b.ToTable("Comments");
                 });
@@ -101,14 +116,10 @@ namespace FicBook.Migrations
 
                     b.Property<DateTime>("CreatedDate");
 
-                    b.Property<bool>("IsPublished");
-
                     b.Property<DateTime>("LastModified");
 
                     b.Property<string>("Title")
                         .IsRequired();
-
-                    b.Property<string>("UserId");
 
                     b.HasKey("ID");
 
@@ -223,6 +234,17 @@ namespace FicBook.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("FicBook.Models.Comment", b =>
+                {
+                    b.HasOne("FicBook.Models.ApplicationUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
+                    b.HasOne("FicBook.Models.Post", "CommentedPost")
+                        .WithMany()
+                        .HasForeignKey("CommentedPostID");
                 });
 
             modelBuilder.Entity("FicBook.Models.Post", b =>

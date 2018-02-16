@@ -1,11 +1,10 @@
 ﻿@model FicBook.Models.Post
 <div class="row article-summary">
     <div class="col-md-4">
-        <profile-picture profile="@Model.Author" size-px="40" />
-        <p class="text-center author-name">
-           @*@(Model.Author.FullName ?? Model.Author.UserName)*@
-            @Html.DisplayFor(model => model.Author.UserName)
         <p class="text-center">
+            <img src=@Model.Author.ProfilePicture class="img-circle" alt="Pikcha"height="50" width="50" />
+            
+            @Html.DisplayFor(model => model.Author.UserName)
             @Model.CreatedDate.ToString("dd MMM yyyy")
         </p>
     </div>

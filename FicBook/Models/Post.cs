@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FicBook.Models
@@ -16,11 +17,9 @@ namespace FicBook.Models
 
         [Required]
         public string Abstract { get; set; }
-        // public string Slug { get; set; }
+        
         [Required]
         public string Content { get; set; }
-
-        public string UserId { get; set; }
 
         public  ApplicationUser Author { get; set; }
 

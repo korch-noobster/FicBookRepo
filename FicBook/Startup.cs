@@ -16,6 +16,9 @@ using System.Security.Claims;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Rewrite;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 
 namespace FicBook
 {
@@ -32,7 +35,7 @@ namespace FicBook
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
+            services.AddSignalR();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -84,9 +87,9 @@ namespace FicBook
                 options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "first_name");
                 options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "last_name");
             });
-        
-        // Add application services.
-        services.AddTransient<IEmailSender, EmailSender>();
+      
+            // Add application services.
+            services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
         }
@@ -105,9 +108,15 @@ namespace FicBook
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<CommentsHub>("hubs");
+            });
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+  
 
             app.UseMvc(routes =>
             {

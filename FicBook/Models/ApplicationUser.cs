@@ -9,7 +9,8 @@ namespace FicBook.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        public string FullName { get; set; }
-        public string PictureUrl { get; set; }
+        public string ProfilePicture { get; set; }
+        public bool AskVerified { get; internal set; }
+        public string ImagePasport { get; internal set; }
     }
 }

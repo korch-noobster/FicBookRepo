@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using FicBook.Models;
 using FicBook.Models.AccountViewModels;
 using FicBook.Services;
+using FicBook.Data;
 
 namespace FicBook.Controllers
 {
@@ -37,6 +38,7 @@ namespace FicBook.Controllers
             _logger = logger;
         }
 
+ 
         [TempData]
         public string ErrorMessage { get; set; }
 
@@ -118,7 +120,8 @@ namespace FicBook.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+               
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email,ProfilePicture= "https://i.imgur.com/oMEOOUf.png" };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

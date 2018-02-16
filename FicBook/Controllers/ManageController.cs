@@ -84,7 +84,7 @@ namespace FicBook.Controllers
 
         public IActionResult UserList() => View(_userManager.Users.ToList());
 
-        public async Task<IActionResult> Edit(string userId)
+      /*  public async Task<IActionResult> Edit(string userId)
         {
             // получаем пользователя
             var user = await _userManager.FindByIdAsync(userId);
@@ -105,7 +105,7 @@ namespace FicBook.Controllers
 
             return NotFound();
         }
-      
+      */
        
         [HttpPost]
         public async Task<IActionResult> Edit(string userId, List<string> roles)
@@ -144,7 +144,6 @@ namespace FicBook.Controllers
             {
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
             var model = new IndexViewModel
             {
                 Username = user.UserName,
@@ -171,13 +170,14 @@ namespace FicBook.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var email = user.Email;
-            if (model.Email != email)
+            var username = user.UserName;
+            
+            if (model.NewUsername != username)
             {
-                var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
-                if (!setEmailResult.Succeeded)
+                var setUsernameResult = await _userManager.SetUserNameAsync(user, model.NewUsername);
+                if (!setUsernameResult.Succeeded)
                 {
-                    throw new ApplicationException($"Unexpected error occurred setting email for user with ID '{user.Id}'.");
+                    throw new ApplicationException($"Unexpected error occurred setting username for user with ID '{user.Id}'.");
                 }
             }
 
@@ -219,6 +219,7 @@ namespace FicBook.Controllers
             }
 
             var hasPassword = await _userManager.HasPasswordAsync(user);
+
             if (!hasPassword)
             {
                 return RedirectToAction(nameof(SetPassword));
@@ -273,7 +274,7 @@ namespace FicBook.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(IndexViewModel model)
+        public async Task<IActionResult> ChangeUsername(IndexViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -296,7 +297,7 @@ namespace FicBook.Controllers
             _logger.LogInformation("User changed their username successfully.");
             StatusMessage = "Your username has been changed.";
 
-            return RedirectToAction(nameof(ChangePassword));
+            return RedirectToAction("Index");
         }
 
 

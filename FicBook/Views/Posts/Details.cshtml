@@ -1,5 +1,5 @@
 ﻿@model FicBook.Models.Post
-
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -12,7 +12,7 @@
 
     <div class="col-md-4">
         <div class="container-fluid sidebar">
-           @if (User.IsInRole("Admin")) 
+           @if (User.IsInRole("Admin")||Model.Author.Id==UserManager.GetUserId(User)) 
               
            {
                <div class="row">
@@ -38,5 +38,50 @@
     </div>
     <div>
         <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+<div style="width: 70%; padding: 20px">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+
+            <! – To show notification count-->
+            <div style="float: left" class="panel-title">Notifications</div>
+            <div style="float: right" class="badge" id="cntNotifications"></div>
+            <div style="clear: both"></div>
+
+
+        </div>
+        <div class="panel-body">
+            <! – To show All the notifications-->
+            <table class="table table-striped table-hover ">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Text</th>
+                        <th>Created Date</th>
+                    </tr>
+                </thead>
+
+                <tbody id="notificationTab"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <! – Add panel notification to send notification, Make sure that user enters the user id of the domain they are logged into -->
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Create Notifications</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="control-label" for="focusedInput">Notification Text</label>
+                <input class="form-control" id="text" type="text" value="">
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="focusedInput">Send To</label>
+                <input class="form-control" id="userName" type="text" value="">
+            </div>
+            <a id="btnSend" style="cursor: pointer" class="btn btn-primary">Send Notification</a>
+        </div>
     </div>
 </div>
