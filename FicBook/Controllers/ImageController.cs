@@ -28,13 +28,14 @@ namespace FicBook.Controllers
             _userManager = userManager;
         }
 
+
         [Authorize]
         public async Task UploadImageAsync(IList<IFormFile> files)
         {
-            
+
             try
             {
-                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                var user = await _userManager.GetUserAsync(User) ;
                 var client = new ImgurClient("556830a80ac5829", "9438948e5e7df4b5151a61b882626c499ef4925e");
                 var endpoint = new ImageEndpoint(client);
                 IImage image;

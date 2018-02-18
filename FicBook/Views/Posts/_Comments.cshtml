@@ -1,0 +1,29 @@
+﻿@model FicBook.Models.Post
+
+<section id="comments">
+    <div class="container">
+        <h2>Comments</h2>
+        @if (Model.CommentsAmount == 0)
+        {
+            <p>Be the first to post a comment</p>
+        }
+        @foreach (var comment in Model.Comments)
+        {
+            <article id="@comment.CommentId" itemprop="comment" itemscope itemtype="http://schema.org/Comment">
+                <h3>
+                    <time datetime="@comment.CreatedDate.ToString("s")" itemprop="datePublished">
+                        <a href="#@comment.CommentId" title="Permalink (#@comment.CommentId)">@comment.CreatedDate.ToString("MMMM d, yyyy")</a>
+                    </time>
+                </h3>
+            </article>
+        }
+        <form asp-controller="Post" asp-action="AddComment" asp-route-postid="@Model.ID" asp-antiforgery="false">
+            <h3>Post a comment</h3>
+            <br />
+            <label for="content">Comment</label>
+            <textarea id="content" name="content" rows="5" cols="100" onfocus="" required placeholder="Enter your comment here..."></textarea>
+           <br/>
+            <input type="submit" value="Post comment" />
+        </form>
+    </div>
+</section>

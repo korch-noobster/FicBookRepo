@@ -29,14 +29,7 @@ namespace FicBook.Controllers
 
             return View();
         }
-
-        public IActionResult NewPost()
-        {
-            ViewData["Message"] = "rofl.";
-
-            return View();
-        }
-
+       
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

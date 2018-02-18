@@ -5,27 +5,42 @@
 @inject SignInManager<ApplicationUser> SignInManager
 
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FicBook</title>
     <environment names="Development">
         <script src="~/js/dropzone.js"></script>
         <link rel="stylesheet" href="~/lib/dropzone/dist/basic.css" />
         <link rel="stylesheet" href="~/lib/dropzone/dist/dropzone.css" />
+        <script src="~/lib/jquery/dist/jquery.js"></script>
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
-
-
-    <link rel="stylesheet" href="~/css/abovethefold.scss" inline/>
+    <link rel="stylesheet" href="~/css/abovethefold.scss" inline />
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
-        <link rel="stylesheet" href="~/css/site.css"/>
+        @{if (Context.Request.Cookies["theme"] == null)
+            {
+                <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+            }
+            else
+            {
+                if (Context.Request.Cookies["theme"] == "dark")
+                {
+                    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-dark.css" />
+                }
+                if (Context.Request.Cookies["theme"] == "light")
+                {
+                    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+                }
+            }
+        }
+       @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-dark.css" />*@
+        <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"/>
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true"/>
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 </head>
 <body>
@@ -51,13 +66,26 @@
         </div>
     </div>
 </nav>
-<div class="container body-content">
-    @RenderBody()
-    <hr/>
-    <footer>
-        <p>&copy; 2018 - FicBook</p>
-    </footer>
-</div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2018 - FicBook</p>
+           
+                @{if (Context.Request.Cookies["theme"] == "dark")
+                    {
+                        <a asp-area="" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)" >Light</a>
+                    }
+                    else
+                    {
+                        <a asp-area="" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)" >Dark</a>
+                    }
+                }
+   
+        </footer>
+    </div>
+
+
 
 <environment include="Development">
     <script src="~/lib/jquery/dist/jquery.js"></script>

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using FicBook.Models;
 using Microsoft.AspNetCore.Identity;
+using FicBook.Data;
 
 namespace FicBook
 {
@@ -25,9 +26,9 @@ namespace FicBook
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var context = services.GetRequiredService<ApplicationDbContext>();
                     var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    await RoleInitializer.InitializeAsync(userManager, rolesManager);
+                    await DbInitializer.InitializeAsync(rolesManager,context);
                 }
                 catch (Exception ex)
                 {

@@ -11,7 +11,7 @@ using System;
 namespace FicBook.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180216131528_initial")]
+    [Migration("20180218101231_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,6 +99,18 @@ namespace FicBook.Migrations
                     b.HasIndex("CommentedPostID");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("FicBook.Models.Genre", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("GenreName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("FicBook.Models.Post", b =>

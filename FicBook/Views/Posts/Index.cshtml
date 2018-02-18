@@ -9,16 +9,4 @@
             @await Component.InvokeAsync("LatestPosts", new { howMany = 15 })
         </li>
     </ul>
-    <div class="col-md-4">
-        <div class="container-fluid sidebar">
-            @if (User.IsInRole("Author") || User.IsInRole("Admin"))
-            {<div class="row">
-                <a asp-action="Create" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Write a new Article
-                </a>
-            </div>
-            }
-          
-        </div>
-    </div>
 </div>

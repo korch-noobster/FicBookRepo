@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Create";
 }
+
 <form asp-action="Create">
     <div class="form-horizontal">
         <h4>Create new article</h4>
@@ -21,6 +22,7 @@
                 <span asp-validation-for="Abstract" class="text-danger" />
             </div>
         </div>
+
         <div class="form-group">
             <label asp-for="Content" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -36,6 +38,16 @@
     </div>
 </form>
 <div>
+    <div class="form-group">
+        <label class="control-label">Set </label>
+        <div id="dropzone">
+            <form action="/Image/UploadImageAsync" class="dropzone needsclick dz-clickable" id="uploader">
+                <div class="dz-message needsclick">
+                    Drag photo u what to upload or just click here to manually select it<br>
+                </div>
+            </form>
+        </div>
+    </div>
     <a asp-action="Index">Back to List</a>
 </div>
 @section Scripts {

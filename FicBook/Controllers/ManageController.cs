@@ -14,6 +14,13 @@ using FicBook.Models;
 using FicBook.Models.ManageViewModels;
 using FicBook.Services;
 using FicBook.Data;
+using Microsoft.AspNetCore.Http;
+using Imgur.API;
+using System.Diagnostics;
+using System.IO;
+using Imgur.API.Endpoints.Impl;
+using Imgur.API.Authentication.Impl;
+using Imgur.API.Models;
 
 namespace FicBook.Controllers
 {
@@ -21,6 +28,8 @@ namespace FicBook.Controllers
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
+
+        private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -34,10 +43,12 @@ namespace FicBook.Controllers
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
           RoleManager<IdentityRole> roleManager,
+          ApplicationDbContext context,
           IEmailSender emailSender,
         ILogger<ManageController> logger,
           UrlEncoder urlEncoder)
         {
+            _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
@@ -84,7 +95,7 @@ namespace FicBook.Controllers
 
         public IActionResult UserList() => View(_userManager.Users.ToList());
 
-      /*  public async Task<IActionResult> Edit(string userId)
+     /*   public async Task<IActionResult> Edit(string userId)
         {
             // получаем пользователя
             var user = await _userManager.FindByIdAsync(userId);
@@ -105,7 +116,7 @@ namespace FicBook.Controllers
 
             return NotFound();
         }
-      */
+      
        
         [HttpPost]
         public async Task<IActionResult> Edit(string userId, List<string> roles)
@@ -132,7 +143,7 @@ namespace FicBook.Controllers
 
             return NotFound();
         }
-
+        */
         [TempData]
         public string StatusMessage { get; set; }
 
@@ -170,16 +181,10 @@ namespace FicBook.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var username = user.UserName;
-            
-            if (model.NewUsername != username)
-            {
-                var setUsernameResult = await _userManager.SetUserNameAsync(user, model.NewUsername);
-                if (!setUsernameResult.Succeeded)
-                {
-                    throw new ApplicationException($"Unexpected error occurred setting username for user with ID '{user.Id}'.");
-                }
-            }
+            await _userManager.SetUserNameAsync(user,model.Username);
+            _context.Users.Update(user);
+           // _context.Add(user);
+           await _context.SaveChangesAsync();
 
             StatusMessage = "Your profile has been updated";
             return RedirectToAction(nameof(Index));
@@ -258,48 +263,6 @@ namespace FicBook.Controllers
 
             return RedirectToAction(nameof(ChangePassword));
         }
-
-        [HttpGet]
-        public async Task<IActionResult> ChangeUsername()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-           
-            var model = new IndexViewModel { StatusMessage = StatusMessage , Username=user.UserName, Email=user.Email};
-            return View(model);
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> ChangeUsername(IndexViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var changeUsernameResult = await _userManager.SetUserNameAsync(user, model.NewUsername);
-            if (!changeUsernameResult.Succeeded)
-            {
-                AddErrors(changeUsernameResult);
-                return View(model);
-            }
-            
-            _logger.LogInformation("User changed their username successfully.");
-            StatusMessage = "Your username has been changed.";
-
-            return RedirectToAction("Index");
-        }
-
 
         [HttpGet]
         public async Task<IActionResult> SetPassword()

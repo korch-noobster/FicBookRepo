@@ -100,6 +100,18 @@ namespace FicBook.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("FicBook.Models.Genre", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("GenreName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
+                });
+
             modelBuilder.Entity("FicBook.Models.Post", b =>
                 {
                     b.Property<int>("ID")

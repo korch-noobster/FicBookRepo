@@ -1,34 +1,62 @@
 ﻿using FicBook.Data;
 using FicBook.Models;
+using Imgur.API;
+using Imgur.API.Authentication.Impl;
+using Imgur.API.Endpoints.Impl;
+using Imgur.API.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace FicBook.Controllers
-{   
-    public class PostsController: Controller
+{
+    public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        
+
         public PostsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-    
+
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Posts.Include(a=>a.Author);
+            var applicationDbContext = _context.Posts.Include(a => a.Author);
             return View(await applicationDbContext.ToListAsync());
         }
-        
+
+         public IActionResult ChangeTheme(string page)
+        {
+            
+            if (Request.Cookies["theme"] == null)
+            {
+                Response.Cookies.Append("theme", "dark");
+            }
+            else
+            {
+                if (Request.Cookies["theme"] == "dark")
+                {
+                    Response.Cookies.Append("theme", "light");
+                }
+                else if (Request.Cookies["theme"] == "light")
+                {
+                    Response.Cookies.Append("theme", "dark");
+                }
+            }
+            return Redirect(page);
+        }
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,7 +65,7 @@ namespace FicBook.Controllers
             }
 
             var post = await _context.Posts.Include(a => a.Author).SingleOrDefaultAsync(m => m.ID == id);
-           
+
             if (post == null)
             {
                 return NotFound();
@@ -62,7 +90,7 @@ namespace FicBook.Controllers
                 post.Author = await _userManager.GetUserAsync(User);
                 //post.UserId = _userManager.GetUserId(User);
                 post.CreatedDate = DateTime.Now;
-                 _context.Add(post);
+                _context.Add(post);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -96,5 +124,6 @@ namespace FicBook.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+
     }
 }

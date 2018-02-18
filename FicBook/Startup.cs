@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
 
 namespace FicBook
 {
@@ -108,10 +109,6 @@ namespace FicBook
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<CommentsHub>("hubs");
-            });
             app.UseStaticFiles();
 
             app.UseAuthentication();

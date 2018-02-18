@@ -1,5 +1,5 @@
 ﻿@model IndexViewModel
-
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = "Profile";
     ViewData.AddActivePage(ManageNavPages.Index);
@@ -8,25 +8,21 @@
 <h4>@ViewData["Title"]</h4>
 @Html.Partial("_StatusMessage", Model.StatusMessage)
 <div class="form-group">
-    <label class="control-label">Обложка проекта</label>
+    <label class="control-label">New user photo</label>
     <div id="dropzone">
         <form action="/Image/UploadImageAsync" class="dropzone needsclick dz-clickable" id="uploader">
             <div class="dz-message needsclick">
-                Перетащите сюда обложку проекта либо кликните для загрузки.<br>
+                Drag photo u what to upload or just click here to manually select it<br>
             </div>
         </form>
     </div>
 </div>
 <div class="row">
-        <form method="post">
+        <form method="post" asp-route-Email="@Model.Email">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" disabled/>
-            </div>
-            <div class="form-group">
-                <label asp-for="NewUsername"></label>
-                    <input asp-for="NewUsername" class="form-control"/>
+                <input asp-for="Username" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="Email"></label>
@@ -38,30 +34,30 @@
             <input id="button" type="submit" value="update" class="btn btn-default" />
         </form>
    </div>
-<script>
-    Dropzone.autoDiscover = false;
-    var myDropzone = new Dropzone('#uploader', {
-        url: '/Image/UploadImageAsync',
-        maxFilesize: 5,
-        maxFiles: 1,
-        uploadMultiple: false,
-        parallelUploads: 1,
-        acceptedFiles: "image/*",
-        autoProcessQueue: true,
-        init: function () {
-            var startUpload = document.getElementById("button");
-            myDropzone = this;
-            startUpload.addEventListener("click", function () {
-                myDropzone.processQueue();
-            });
-            this.on("success", function () {
-                myDropzone.options.autoProcessQueue = true;
-            });
-        }
-    });
-</script>
+
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-
+<script>
+        Dropzone.autoDiscover = false;
+        var myDropzone = new Dropzone('#uploader', {
+            url: '/Image/UploadImageAsync',
+            maxFilesize: 5,
+            maxFiles: 1,
+            uploadMultiple: false,
+            parallelUploads: 1,
+            acceptedFiles: "image/*",
+            autoProcessQueue: true,
+            init: function () {
+                var startUpload = document.getElementById("button");
+                myDropzone = this;
+                startUpload.addEventListener("click", function () {
+                    myDropzone.processQueue();
+                });
+                this.on("success", function () {
+                    myDropzone.options.autoProcessQueue = true;
+                });
+            }
+        });
+</script>
 }
