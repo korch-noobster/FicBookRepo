@@ -16,6 +16,8 @@ namespace FicBook.Data
 
         public DbSet<Genre> Genres { get; set; }
 
+        public DbSet<Default> Source { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

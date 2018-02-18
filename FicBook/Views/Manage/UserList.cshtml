@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<FicBook.Models.ApplicationUser>
 @inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = "Users";
     ViewData.AddActivePage(ManageNavPages.UserList);

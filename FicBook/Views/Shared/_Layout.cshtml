@@ -1,8 +1,9 @@
 ﻿<!DOCTYPE html>
 <html>
-@inject UserManager<ApplicationUser> UserManager
-
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 <head>
     <meta charset="utf-8" />
@@ -59,7 +60,7 @@
             <ul class="nav navbar-nav">
                 @if (User.IsInRole("Author") || User.IsInRole("Admin"))
                 {
-                    <li><a asp-area="" asp-controller="Posts" asp-action="Create">Add new post</a></li>
+                    <li><a asp-area="" asp-controller="Posts" asp-action="Create">@Localizer["AddNewPost"]</a></li>
                 }
             </ul>
             @await Html.PartialAsync("_LoginPartial", await UserManager.GetUserAsync(User))
@@ -74,17 +75,16 @@
            
                 @{if (Context.Request.Cookies["theme"] == "dark")
                     {
-                        <a asp-area="" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)" >Light</a>
+                        <a asp-area="" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)" >@Localizer["Light"]</a>
                     }
                     else
                     {
-                        <a asp-area="" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)" >Dark</a>
+                        <a asp-area="" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)" >@Localizer["Dark"]</a>
                     }
                 }
-   
+            @await Html.PartialAsync("_SelectLanguage")
         </footer>
     </div>
-
 
 
 <environment include="Development">

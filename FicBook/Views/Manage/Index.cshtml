@@ -1,18 +1,20 @@
 ﻿@model IndexViewModel
 @inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = Localizer["Profile"];
     ViewData.AddActivePage(ManageNavPages.Index);
 }
 
-<h4>@ViewData["Title"]</h4>
+<h4>@Localizer["Profile"]</h4>
 @Html.Partial("_StatusMessage", Model.StatusMessage)
 <div class="form-group">
-    <label class="control-label">New user photo</label>
+    <label class="control-label">@Localizer["NewPhoto"]</label>
     <div id="dropzone">
         <form action="/Image/UploadImageAsync" class="dropzone needsclick dz-clickable" id="uploader">
             <div class="dz-message needsclick">
-                Drag photo u what to upload or just click here to manually select it<br>
+              @Localizer["DragNDrop"]<br>
             </div>
         </form>
     </div>
@@ -21,17 +23,18 @@
         <form method="post" asp-route-Email="@Model.Email">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Username"></label>
+                <label class="col-md-6 control-label">@Localizer["Username"]</label>
                 <input asp-for="Username" class="form-control" />
             </div>
+            
             <div class="form-group">
-                <label asp-for="Email"></label>
+                    <label class="col-md-12 control-label">@Localizer["Email"]</label>
                 <div class="input-group">
-                    <input asp-for="Email" class="form-control" disabled/>
+                    <input asp-for="Email" class="form-control" disabled />
                     <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
                 </div>
             </div>
-            <input id="button" type="submit" value="update" class="btn btn-default" />
+            <input id="button" type="submit" value=@Localizer["Update"] class="btn btn-default" />
         </form>
    </div>
 

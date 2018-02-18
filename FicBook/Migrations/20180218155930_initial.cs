@@ -64,6 +64,18 @@ namespace FicBook.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Source",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Picture = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Source", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -298,6 +310,9 @@ namespace FicBook.Migrations
 
             migrationBuilder.DropTable(
                 name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Source");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -65,7 +65,28 @@ namespace FicBook.Models
             {
                 await _context.AddAsync(new Genre() { GenreName = "Fix-fic" });
             }
-#endregion 
+            #endregion
+
+            if (await _context.Source.FindAsync("DefaultUser") == null)
+            {
+                await _context.AddAsync(new Default() { Id = "DefaultUser", Picture = "https://imgur.com/oMEOOUf.png" });
+            }
+            if (await _context.Source.FindAsync("RU") == null)
+            {
+                await _context.AddAsync(new Default() { Id = "RU",Picture= "https://imgur.com/sVCbTYG.png" });
+            }
+            if (await _context.Source.FindAsync("EN") == null)
+            {
+                await _context.AddAsync(new Default() { Id = "EN", Picture = "https://imgur.com/KXoFgKw.png" });
+            }
+            if (await _context.Source.FindAsync("ToDark") == null)
+            {
+                await _context.AddAsync(new Default() { Id = "ToDark", Picture = "https://imgur.com/U4ou6yi.png" });
+            }
+            if (await _context.Source.FindAsync("ToBright") == null)
+            {
+                await _context.AddAsync(new Default() { Id = "ToBright", Picture = "https://imgur.com/uTKgOBe.png" });
+            }
             await _context.SaveChangesAsync();
         }
     }
