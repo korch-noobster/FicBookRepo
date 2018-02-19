@@ -13,6 +13,11 @@ namespace FicBook.Models
         public int ID { get; set; } 
 
         [Required]
+        public string Genre { get; set; }
+
+        public List<Tag> Tags { get; set; } = new List<Tag>();
+
+        [Required]
         public string Title { get; set; }
 
         [Required]

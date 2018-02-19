@@ -1,4 +1,6 @@
 ﻿@model FicBook.Models.Post
+@using FicBook.Data
+@inject ApplicationDbContext contetxt
 @{
     ViewData["Title"] = "Create";
 }
@@ -10,10 +12,27 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="Title" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
+            <div class="col-md-3">
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger" />
             </div>
+            <label asp-for="Genre" class="col-md-2 control-label"></label>
+            <div class="btn-group">
+                <input asp-for="Genre" id="datebox" class="btn" readonly/>
+                <span asp-validation-for="Genre" class="text-danger" />               
+                <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul id="list" class="dropdown-menu">
+                    @foreach (var genre in contetxt.Genres)
+                    {
+                        <li><a href="#">@genre.GenreName</a></li>
+                    }
+                </ul>
+            </div>
+           @* <label asp-for="Tags" class="col-md-2 control-label"></label>
+            <div class="col-md-3">
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger" />
+            </div>*@
         </div>
         <div class="form-group">
             <label asp-for="Abstract" class="col-md-2 control-label"></label>
@@ -42,6 +61,7 @@
         <label class="control-label">Set </label>
         <div id="dropzone">
             <form action="/Image/UploadImageAsync" class="dropzone needsclick dz-clickable" id="uploader">
+              @*  <input type="hidden" name="Id" value="@Model.ID" />*@
                 <div class="dz-message needsclick">
                     Drag photo u what to upload or just click here to manually select it<br>
                 </div>
@@ -52,4 +72,40 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
 }
+<script>
+    Dropzone.autoDiscover = false;
+    var myDropzone = new Dropzone('#uploader', {
+        url: '/Image/UploadImageAsync',
+        maxFilesize: 5,
+        maxFiles: 1,
+        uploadMultiple: false,
+        parallelUploads: 1,
+        acceptedFiles: "image/*",
+        autoProcessQueue: true,
+        init: function () {
+           
+            var startUpload = document.getElementById("button");
+            myDropzone = this;
+            startUpload.addEventListener("click", function () {
+                myDropzone.processQueue();
+            });
+            this.on('sending', function (file, formData) {
+                formData.append('Id',@Model.ID)
+
+            });
+            this.on("success", function () {
+                myDropzone.options.autoProcessQueue = true;
+            });
+        }
+    });
+</script>
+
+<SCRIPT language="javascript">
+    $('#list li').on('click', function () {
+        $('#datebox').val($(this).text());
+    });
+</SCRIPT>
+

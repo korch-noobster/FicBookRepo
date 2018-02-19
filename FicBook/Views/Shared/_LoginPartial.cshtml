@@ -14,7 +14,7 @@
     <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">@Localizer["Hello"] @Model.UserName</a>
+                <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">@Localizer["Hello"] @(Model.UserName ?? User.Identity.Name)</a>
             </li>
             <li>
              <img src=@Model.ProfilePicture class="img-circle" alt="Pikcha" height="50" width="50" />

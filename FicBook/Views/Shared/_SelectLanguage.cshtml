@@ -3,10 +3,10 @@
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
-
+@using FicBook.Data
 @inject IViewLocalizer Localizer
 @inject IOptions<RequestLocalizationOptions> LocOptions
-
+@inject ApplicationDbContext context
 @{
 
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
@@ -15,10 +15,15 @@
         .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
         .ToList();
 }
-<form asp-controller="Posts" asp-action="SetLanguage" style="margin-top:20px;"
-      asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)"
-       method="post" class="form-horizontal">
-    @Localizer["Language:"] <select name="culture" onchange="this.form.submit();"
-                                    asp-for="@requestCulture.RequestCulture.UICulture.Name"
-                                    asp-items="cultureItems"></select>
+<form  style="display:inline-block" asp-controller="Posts" asp-action="SetLanguage" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)" method="post" class="form-horizontal">
+   @if (requestCulture.RequestCulture.UICulture.Name == "ru")
+   {    
+       var img = await context.Source.FindAsync("EN");
+       <button type="submit"><img src="@img.Picture" height="20" width="30" /></button>
+   }
+   else
+   {
+       var img = await context.Source.FindAsync("RU");
+    <button type="submit"><img src="@img.Picture"height="20" width="30"  /></button>
+   }
 </form>

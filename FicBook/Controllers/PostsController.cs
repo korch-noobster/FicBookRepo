@@ -97,7 +97,7 @@ namespace FicBook.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Title, Abstract,Content")] Post post)
+        public async Task<IActionResult> Create([Bind("Title, Abstract,Content,Genre")] Post post)
         {
             if (ModelState.IsValid)
             {

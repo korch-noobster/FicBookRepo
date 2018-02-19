@@ -30,7 +30,7 @@ namespace FicBook.Controllers
 
 
         [Authorize]
-        public async Task UploadImageAsync(IList<IFormFile> files)
+        public async Task UploadImageAsync(IList<IFormFile> files,int id)
         {
 
             try

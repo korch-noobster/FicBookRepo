@@ -1,10 +1,11 @@
 ﻿<!DOCTYPE html>
 <html>
 @using Microsoft.AspNetCore.Mvc.Localization
+@using FicBook.Data
 @inject IViewLocalizer Localizer
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
+@inject ApplicationDbContext context
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,7 +35,6 @@
                 }
             }
         }
-       @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-dark.css" />*@
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
@@ -65,25 +65,39 @@
             </ul>
             @await Html.PartialAsync("_LoginPartial", await UserManager.GetUserAsync(User))
         </div>
+
     </div>
 </nav>
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; 2018 - FicBook</p>
-           
+        <footer >
+            <p style="display:inline-block" class="col-md-2">&copy; 2018 - FicBook</p>
+            <div class="col-md-offset-10 ">
                 @{if (Context.Request.Cookies["theme"] == "dark")
                     {
-                        <a asp-area="" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)" >@Localizer["Light"]</a>
+                        var img = await context.Source.FindAsync("ToBright");
+                        <form style="display:inline-block" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)">
+                            <button type="submit">
+                                <img src="@img.Picture" height="20" width="30" />
+                            </button>
+                        </form>
                     }
                     else
                     {
-                        <a asp-area="" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)" >@Localizer["Dark"]</a>
+                        var img = await context.Source.FindAsync("ToDark");
+                        <form style="display:inline-block" asp-controller="Posts" asp-action="ChangeTheme" asp-route-page="@Url.RouteUrl(ViewContext.RouteData.Values)">
+                            <button type="submit">
+                                <img src="@img.Picture" height="20" width="30" />
+                            </button>
+                        </form>
                     }
                 }
-            @await Html.PartialAsync("_SelectLanguage")
-        </footer>
+                @await Html.PartialAsync("_SelectLanguage")
+            </div>
+          
+            
+</footer>
     </div>
 
 
@@ -111,3 +125,6 @@
 @RenderSection("Scripts", required: false)
 </body>
 </html>
+<style>
+  .ftr-links 
+</style>
