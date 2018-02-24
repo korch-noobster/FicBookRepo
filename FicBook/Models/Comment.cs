@@ -8,13 +8,16 @@ namespace FicBook.Models
 {
     public class Comment
     {
-        public int CommentId { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         public ApplicationUser Author { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        public Post CommentedPost { get; set; }
+        public Post Post { get; set; }
+
+        public String PostFk { get; set; }
+
         [Required]
         public string Text { get; set; }
 

@@ -1,11 +1,15 @@
 ﻿@model FicBook.Models.Post
 @inject UserManager<ApplicationUser> UserManager
+@using FicBook.Data
+@inject ApplicationDbContext _context
 @{
     ViewData["Title"] = Model.Title;
 }
 <div class="article-page container">
     <div class="col-md-8 article-details">
+
         @Html.Partial("_PostSummary", Model)
+        <strong>@Model.Title</strong>
         <hr />
         <markdown source="@Model.Content"></markdown>
     </div>
@@ -17,16 +21,16 @@
            {
                <div class="row">
                 <div class="btn-group">
-                    <a asp-action="Create" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Write a new Article
+                    <a asp-action="AddChapter"asp-route-Id="@Model.Id" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> Write a new chapter
                     </a>
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a asp-action="Index">Back to List</a></li>
-                        <li><a asp-action="Delete" asp-route-id="@Model.ID">Delete</a></li>
+                        <li><a asp-action="Edit"asp-route-Id="@Model.Id">Edit current chapter</a></li>
+                        <li><a asp-action="Delete" asp-route-id="@Model.Id">Delete</a></li>
                     </ul>
                 </div>
             </div>
@@ -37,12 +41,24 @@
         </div>
     </div>
     <div>
+        
+      @foreach (var Chapters in _context.Posts.OrderBy(a=>a.CreatedDate))
+      {
+          
+          if (Chapters.ParentId.Trim().Equals(Model.ParentId.Trim()))
+          {
+            <a asp-action="Details" asp-route-id="@Chapters.Id">Go to @Chapters.Title chapter</a>
+            <br />
+          }
+      }
+        <br />
         <a asp-action="Index">Back to List</a>
     </div>
-    @*
+    
     <div class="col-md-8 article-details">
+    
         @Html.Partial("_Comments", Model)
-        <hr />
+       
     </div>
-        *@
+        
 </div>

@@ -1,0 +1,69 @@
+﻿@model FicBook.Models.Post
+@using FicBook.Data
+@{
+    ViewData["Title"] = "Add chapter";
+}
+
+<form asp-action="AddChapter">
+    <div class="form-horizontal">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <br />  
+            <label asp-for="Title" class="col-md-2 control-label"></label>
+            <div class="col-md-3">
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger" />
+            </div>
+            <br />
+            <br />  
+            <br />  
+         <div class="form-group">
+            <label asp-for="Content" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Content" class="form-control" rows="20"></textarea>
+                <span asp-validation-for="Content" class="text-danger" />
+            </div>
+        </div>
+         <input asp-for="ParentId" value="@ViewContext.RouteData.Values["id"] "hidden />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="AddChapter"  class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+   </div>
+</form>
+<div>
+    
+    <a asp-action="Index" >Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+
+    <script>
+            Dropzone.autoDiscover = false;
+            var myDropzone = new Dropzone('#uploader', {
+                url: '/Posts/UploadImageAsync',
+                maxFilesize: 5,
+                maxFiles: 1,
+                uploadMultiple: false,
+                parallelUploads: 1,
+                acceptedFiles: "image/*",
+                autoProcessQueue: true,
+                init: function () {
+
+                    var startUpload = document.getElementById("button");
+                    myDropzone = this;
+                    startUpload.addEventListener("click", function () {
+                        myDropzone.processQueue();
+                    });
+                    this.on("success", function () {
+                        myDropzone.options.autoProcessQueue = true;
+                    });
+                }
+            });
+    </script>
+}

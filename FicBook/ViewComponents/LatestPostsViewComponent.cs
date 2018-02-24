@@ -20,7 +20,7 @@ namespace FicBook.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync(int howMany )
         {
             var lastPost = await _context.Posts
-                                            .OrderByDescending(a => a.CreatedDate)
+                                            .OrderByDescending(a => a.LastModified)
                                             .Take(howMany)
                                             .ToListAsync();
             return View(lastPost);

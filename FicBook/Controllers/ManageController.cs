@@ -21,6 +21,7 @@ using System.IO;
 using Imgur.API.Endpoints.Impl;
 using Imgur.API.Authentication.Impl;
 using Imgur.API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FicBook.Controllers
 {
@@ -54,6 +55,40 @@ namespace FicBook.Controllers
             _urlEncoder = urlEncoder;
         }
 
+        public async Task UploadImageAsync(IList<IFormFile> files)
+        {
+
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var client = new ImgurClient("556830a80ac5829", "9438948e5e7df4b5151a61b882626c499ef4925e");
+                var endpoint = new ImageEndpoint(client);
+                IImage image;
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        user.AskVerified = true;
+                        using (var fileStream = file.OpenReadStream())
+                        using (var ms = new MemoryStream())
+                        {
+                            fileStream.CopyTo(ms);
+                            var fileBytes = ms.ToArray();
+                            string s = Convert.ToBase64String(fileBytes);
+                            image = await endpoint.UploadImageBinaryAsync(fileBytes);
+                        }
+                        Debug.Write("Image uploaded. Image Url: " + image.Link);
+                        user.ProfilePicture = image.Link;
+                        await _userManager.UpdateAsync(user);
+                    }
+                }
+            }
+            catch (ImgurException imgurEx)
+            {
+                Debug.Write("An error occurred uploading an image to Imgur.");
+                Debug.Write(imgurEx.Message);
+            }
+        }
 
         public async Task<IActionResult> Delete(string userId)
         {
@@ -87,60 +122,12 @@ namespace FicBook.Controllers
             await _userManager.AddToRoleAsync(user, "Admin");
             return RedirectToAction("UserList");
         }
+        
 
-        public IActionResult RolesIndex() => View(_roleManager.Roles.ToList());
+        public IActionResult GetUserList() => View(_userManager.Users.ToList());
 
-        public IActionResult UserList() => View(_userManager.Users.ToList());
-
-     /*   public async Task<IActionResult> Edit(string userId)
-        {
-            // получаем пользователя
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user != null)
-            {
-                // получем список ролей пользователя
-                var userRoles = await _userManager.GetRolesAsync(user);
-                var allRoles = _roleManager.Roles.ToList();
-                EditRolesViewModel model = new EditRolesViewModel
-                {
-                    UserId = user.Id,
-                    UserEmail = user.Email,
-                    UserRoles = userRoles,
-                    AllRoles = allRoles
-                };
-                return View(model);
-            }
-
-            return NotFound();
-        }
-      
-       
-        [HttpPost]
-        public async Task<IActionResult> Edit(string userId, List<string> roles)
-        {
-            // получаем пользователя
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user != null)
-            {
-                // получем список ролей пользователя
-                var userRoles = await _userManager.GetRolesAsync(user);
-                // получаем все роли
-                var allRoles = _roleManager.Roles.ToList();
-                // получаем список ролей, которые были добавлены
-                var addedRoles = roles.Except(userRoles);
-                // получаем роли, которые были удалены
-                var removedRoles = userRoles.Except(roles);
-
-                await _userManager.AddToRolesAsync(user, addedRoles);
-
-                await _userManager.RemoveFromRolesAsync(user, removedRoles);
-
-                return RedirectToAction("UserList");
-            }
-
-            return NotFound();
-        }
-        */
+        public IActionResult GetMyContent() => View(_context);
+    
         [TempData]
         public string StatusMessage { get; set; }
 
@@ -186,8 +173,6 @@ namespace FicBook.Controllers
             StatusMessage = "Your profile has been updated";
             return RedirectToAction(nameof(Index));
         }
-
-        
 
         [HttpGet]
         public async Task<IActionResult> ChangePassword()

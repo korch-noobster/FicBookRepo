@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using FicBook.Data
+@model  ApplicationDbContext
+
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Users";
+    ViewData.AddActivePage(ManageNavPages.GetMyContent);
+}
+<h2>My content</h2>
+<table class="table">
+
+        @foreach (var post in Model.Posts)
+        {
+            if (post.Id != null)
+            {
+
+            <tr>
+                <td>
+                    <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id">@post.Title</a>
+                    <img src=@post.Picture  alt="Pikcha" height="50" width="50" />
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-controller="Posts" asp-action="Edit" asp-route-userid="@post.Id">Edit</a>
+                    <a class="btn btn-danger" asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" >Delete</a>
+                </td>
+            </tr>
+
+            }
+        }
+</table>

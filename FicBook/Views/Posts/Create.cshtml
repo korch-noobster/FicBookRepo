@@ -1,6 +1,6 @@
 ﻿@model FicBook.Models.Post
 @using FicBook.Data
-@inject ApplicationDbContext contetxt
+@inject ApplicationDbContext context
 @{
     ViewData["Title"] = "Create";
 }
@@ -18,94 +18,72 @@
             </div>
             <label asp-for="Genre" class="col-md-2 control-label"></label>
             <div class="btn-group">
-                <input asp-for="Genre" id="datebox" class="btn" readonly/>
-                <span asp-validation-for="Genre" class="text-danger" />               
+                <input asp-for="Genre" id="datebox" class="btn"readonly required /> 
+                <span asp-validation-for="Genre" class="text-danger" />
                 <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                 <ul id="list" class="dropdown-menu">
-                    @foreach (var genre in contetxt.Genres)
+                    @foreach (var genre in context.Genres)
                     {
                         <li><a href="#">@genre.GenreName</a></li>
                     }
                 </ul>
             </div>
-           @* <label asp-for="Tags" class="col-md-2 control-label"></label>
-            <div class="col-md-3">
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger" />
-            </div>*@
         </div>
-        <div class="form-group">
-            <label asp-for="Abstract" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <textarea asp-for="Abstract" class="form-control" rows="5"></textarea>
-                <span asp-validation-for="Abstract" class="text-danger" />
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Content" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <textarea asp-for="Content" class="form-control" rows="20"></textarea>
-                <span asp-validation-for="Content" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
-<div>
     <div class="form-group">
-        <label class="control-label">Set </label>
-        <div id="dropzone">
-            <form action="/Image/UploadImageAsync" class="dropzone needsclick dz-clickable" id="uploader">
-              @*  <input type="hidden" name="Id" value="@Model.ID" />*@
-                <div class="dz-message needsclick">
-                    Drag photo u what to upload or just click here to manually select it<br>
-                </div>
-            </form>
+        <label asp-for="TagString" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="TagString" class="form-control" data-role="tagsinput"/>
         </div>
     </div>
-    <a asp-action="Index">Back to List</a>
-</div>
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+             <div class="form-group">
+                <label asp-for="Abstract" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <textarea asp-for="Abstract" class="form-control" rows="5" required></textarea>
+                    <span asp-validation-for="Abstract" class="text-danger" />
+                </div>
+            </div>
 
+            <div class="form-group">
+                <label asp-for="Content" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <textarea asp-for="Content" class="form-control" rows="20"></textarea>
+                    <span asp-validation-for="Content" class="text-danger" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+</form>
+       @section Scripts {
+       @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-}
-<script>
-    Dropzone.autoDiscover = false;
-    var myDropzone = new Dropzone('#uploader', {
-        url: '/Image/UploadImageAsync',
-        maxFilesize: 5,
-        maxFiles: 1,
-        uploadMultiple: false,
-        parallelUploads: 1,
-        acceptedFiles: "image/*",
-        autoProcessQueue: true,
-        init: function () {
-           
-            var startUpload = document.getElementById("button");
-            myDropzone = this;
-            startUpload.addEventListener("click", function () {
-                myDropzone.processQueue();
-            });
-            this.on('sending', function (file, formData) {
-                formData.append('Id',@Model.ID)
+        <script>
+            Dropzone.autoDiscover = false;
+            var myDropzone = new Dropzone('#uploader', {
+                url: '/Posts/UploadImageAsync',
+                maxFilesize: 5,
+                maxFiles: 1,
+                uploadMultiple: false,
+                parallelUploads: 1,
+                acceptedFiles: "image/*",
+                autoProcessQueue: true,
+                init: function () {
 
+                    var startUpload = document.getElementById("button");
+                    myDropzone = this;
+                  
+                    this.on("success", function () {
+                        myDropzone.options.autoProcessQueue = true;
+                    });
+                }
             });
-            this.on("success", function () {
-                myDropzone.options.autoProcessQueue = true;
-            });
+        </script>
+           <script>
+               $('#list li a').on('click', function () {
+                   $('#datebox').val($(this).html());
+               }); 
+           </script>
         }
-    });
-</script>
-
-<SCRIPT language="javascript">
-    $('#list li').on('click', function () {
-        $('#datebox').val($(this).text());
-    });
-</SCRIPT>
-

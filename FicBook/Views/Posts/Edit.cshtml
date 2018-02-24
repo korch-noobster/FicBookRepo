@@ -1,0 +1,130 @@
+﻿@model FicBook.Models.Post
+@using FicBook.Data
+@using FicBook.Data
+@inject ApplicationDbContext contetxt
+@{
+    ViewData["Title"] = "Add chapter";
+}
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+    <h4>Edit</h4>
+    <hr />
+    @if (Model.Id == Model.ParentId)
+    {
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Title" class="col-md-2 control-label"></label>
+            <div class="col-md-3">
+                <input asp-for="Title" value="@Model.Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger" />
+            </div>
+            <label asp-for="Genre" class="col-md-2 control-label"></label>
+            <div class="btn-group">
+                <input asp-for="Genre" id="datebox" value="@Model.Genre" class="btn" readonly required />
+                <span asp-validation-for="Genre" class="text-danger" />
+                <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul id="list" class="dropdown-menu">
+                    @foreach (var genre in contetxt.Genres)
+                    {
+                        <li><a href="#">@genre.GenreName</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="TagString" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="TagString" value="@Model.TagString" class="form-control" data-role="tagsinput" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Abstract" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Abstract" class="form-control" rows="5" required>{@Model.Abstract}</textarea>
+                <span asp-validation-for="Abstract" class="text-danger" />
+            </div>
+        </div>
+
+            <div class="form-group">
+                <label asp-for="Content" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <textarea asp-for="Content" class="form-control" rows="20">{@Model.Content}</textarea>
+                    <span asp-validation-for="Content" class="text-danger" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                  
+                </div>
+            </div>
+    }
+    else
+    {
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <br />
+                <label asp-for="Title" class="col-md-2 control-label"></label>
+                <div class="col-md-3">
+                    <input asp-for="Title"value="@Model.Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger" />
+                </div>
+                <br />
+                <br />
+                <br />
+                <div class="form-group">
+                    <label asp-for="Content" class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <textarea asp-for="Content" class="form-control" rows="20">{@Model.Content}</textarea>
+                        <span asp-validation-for="Content" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                    </div>
+                </div>
+            </div>
+    }
+        <input type="submit" value="Edit" class="btn btn-default" />
+</div>
+
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+
+    <script>
+            Dropzone.autoDiscover = false;
+            var myDropzone = new Dropzone('#uploader', {
+                url: '/Posts/UploadImageAsync',
+                maxFilesize: 5,
+                maxFiles: 1,
+                uploadMultiple: false,
+                parallelUploads: 1,
+                acceptedFiles: "image/*",
+                autoProcessQueue: true,
+                init: function () {
+
+                    var startUpload = document.getElementById("button");
+                    myDropzone = this;
+                    startUpload.addEventListener("click", function () {
+                        myDropzone.processQueue();
+                    });
+                    this.on("success", function () {
+                        myDropzone.options.autoProcessQueue = true;
+                    });
+                }
+            });
+    </script>
+<script>
+            $('#list li a').on('click', function () {
+                $('#datebox').val($(this).html());
+            });
+</script>
+
+}

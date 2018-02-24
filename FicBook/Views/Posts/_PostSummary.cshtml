@@ -1,5 +1,9 @@
 ﻿@model FicBook.Models.Post
+ @if (Model.Id==Model.ParentId)
+ {
 <div class="row article-summary">
+    <br />
+   
     <div class="col-md-4">
         <p class="text-center">
             <img src=@Model.Author.ProfilePicture class="img-circle" alt="Pikcha"height="50" width="50" />
@@ -10,10 +14,12 @@
     </div>
     <div class="col-md-8">
         <h4>
-            <a asp-action="Details" asp-route-id="@Model.ID">@Model.Title</a>
+            <a  asp-action="Details" asp-route-id="@Model.Id">@Model.Title</a>
         </h4>
         <blockquote>
             <p>@Model.Abstract</p>
         </blockquote>
-    </div>
+        </div>
 </div>
+
+ }

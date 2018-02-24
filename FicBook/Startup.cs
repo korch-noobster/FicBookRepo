@@ -17,8 +17,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
@@ -40,6 +38,8 @@ namespace FicBook
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSignalR();
+
+            services.AddScoped<IViewRenderService, ViewRenderService>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
