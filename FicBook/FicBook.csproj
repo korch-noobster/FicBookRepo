@@ -12,15 +12,21 @@
 
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.VK" Version="0.0.1" />
+    <PackageReference Include="ElasticsearchCRUD" Version="2.4.1.1" />
     <PackageReference Include="Imgur.API" Version="4.0.1" />
     <PackageReference Include="jQuery.filedrop" Version="1.0.1" />
     <PackageReference Include="MailKit" Version="2.0.1" />
     <PackageReference Include="Markdown" Version="2.2.1" />
+    <PackageReference Include="Microsoft.AspNet.WebUtilities" Version="1.0.0-rc1-final" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />
+    <PackageReference Include="Rotativa" Version="1.7.3" />
+    <PackageReference Include="Rotativa.Core" Version="2.0.2.1" />
+    <PackageReference Include="RotativaCore" Version="2.1.1" />
     <PackageReference Include="TagHelperSamples.Markdown" Version="2.0.30" />
   <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.0-alpha2-final" />
+  <PackageReference Include="TinyMCE" Version="4.7.7" />
   <PackageReference Include="WkWrap.Core" Version="1.0.2" />
   </ItemGroup>
 

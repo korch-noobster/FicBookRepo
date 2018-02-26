@@ -8,23 +8,24 @@ using System.Threading.Tasks;
 
 namespace FicBook.ViewComponents
 {
-    public class LatestPostsViewComponent: ViewComponent
+    public class CategoryPostsViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext _context;
 
-        public LatestPostsViewComponent(ApplicationDbContext context)
+        public CategoryPostsViewComponent(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(int howMany )
+        public async Task<IViewComponentResult> InvokeAsync(string category)
         {
             var lastPost = await _context.Posts
-                                            .OrderByDescending(a => a.LastModified)
-                                            .Include(a=>a.Author)
-                                            .Take(howMany)
+                                            .Where(a => a.Genre == category)
+                                            .Include(a => a.Author)
                                             .ToListAsync();
+                                            
             return View(lastPost);
         }
     }
+   
 }

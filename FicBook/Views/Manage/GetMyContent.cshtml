@@ -13,16 +13,23 @@
 
         @foreach (var post in Model.Posts)
         {
-            if (post.Id != null)
+            if (post.Id != null && await UserManager.GetUserAsync(User)== post.Author )
             {
 
             <tr>
                 <td>
                     <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id">@post.Title</a>
+                    @if (post.Id == post.ParentId)
+                    {
                     <img src=@post.Picture  alt="Pikcha" height="50" width="50" />
+                    }
                 </td>
                 <td>
                     <a class="btn btn-sm btn-primary" asp-controller="Posts" asp-action="Edit" asp-route-userid="@post.Id">Edit</a>
+                    @if (post.Id == post.ParentId)
+                    {
+                    <a class="btn btn-success" asp-controller="Posts" asp-action="AddChapter" asp-route-id="@post.Id">Add new chapter</a>
+                    }
                     <a class="btn btn-danger" asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" >Delete</a>
                 </td>
             </tr>

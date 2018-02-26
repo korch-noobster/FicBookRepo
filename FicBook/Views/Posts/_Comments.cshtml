@@ -1,18 +1,34 @@
 ﻿@model FicBook.Models.Post
 @inject UserManager<ApplicationUser> UserManager
+@using FicBook.Data
+@inject ApplicationDbContext _context
 
 <section id="comments">
     <div class="container">
         <h2>Comments</h2>
+        @foreach (var comment in _context.Comments)
+        {
+            if (comment.PostId.Trim() == Model.ParentId.Trim() && Model.Comments.SingleOrDefault(m => m.CreatedDate  == comment.CreatedDate)==null)
+            {
+                Model.Comments.Add(comment);
+            }
+        }
         @if ( Model.Comments.Count == 0)
         {
             <p>Be the first to post a comment</p>
         }
         else
         {
-            foreach (var comment in Model.Comments)
+            foreach (var comment in Model.Comments.OrderBy(a => a.CreatedDate))
             {
-                <label class="col-md-2 control-label">@comment.Text</label>
+                <img src=@comment.Author.ProfilePicture class="img-circle" alt="Pikcha" height="50" width="50" />
+                <label>@comment.Text</label>
+                @Html.Raw(comment.CreatedDate)
+                <br />
+                <strong> @Html.Raw(comment.Author.UserName)</strong>
+                <br />    
+                <br />
+
             }
         }
     </div>

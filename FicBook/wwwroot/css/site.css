@@ -47,3 +47,9 @@
     vertical-align: middle;
     border-radius: 50%;
 }
+.commentBox {
+    background-color: #efefef;
+    padding: 10px;
+    border-radius: 10px;
+}
+

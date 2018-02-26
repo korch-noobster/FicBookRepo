@@ -26,7 +26,6 @@ namespace FicBook.Models
         [Required]
         public string Title { get; set; }
 
-
         public string Abstract { get; set; }
         
         [Required]

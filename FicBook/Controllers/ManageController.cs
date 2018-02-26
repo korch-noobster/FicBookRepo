@@ -114,7 +114,7 @@ namespace FicBook.Controllers
             }
             return RedirectToAction("UserList");
         }
-
+        [Authorize]
         public async Task<IActionResult> SetAdmin(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);

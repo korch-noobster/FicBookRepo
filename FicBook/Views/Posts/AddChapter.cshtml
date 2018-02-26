@@ -66,4 +66,10 @@
                 }
             });
     </script>
+<script>
+            $('#list li a').on('click', function () {
+                $('#datebox').val($(this).html());
+            });
+</script>
+<script>tinymce.init({ selector: 'textarea' });</script>
 }

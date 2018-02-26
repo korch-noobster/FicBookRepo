@@ -126,7 +126,7 @@ namespace FicBook.Controllers
             if (ModelState.IsValid)
             {
                 var img = await _context.Source.FindAsync("DefaultUser");
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email,ProfilePicture= img.Picture };
+                var user = new ApplicationUser { UserName = model.Email.Substring(0,15), Email = model.Email,ProfilePicture= img.Picture };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -203,8 +203,8 @@ namespace FicBook.Controllers
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLogin", new ExternalLoginViewModel { Email = email });
+                var username = info.Principal.FindFirstValue(ClaimTypes.Email);
+                return View("ExternalLogin", new ExternalLoginViewModel { Username = username });
             }
         }
 
@@ -221,7 +221,9 @@ namespace FicBook.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var img = await _context.Source.FindAsync("DefaultUser");
+                var user = new ApplicationUser {  UserName = model.Username, ProfilePicture = img.Picture,EmailConfirmed=true };
+              
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -229,13 +231,13 @@ namespace FicBook.Controllers
                     if (result.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        await _userManager.AddToRoleAsync(user, "Author");
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return RedirectToLocal(returnUrl);
                     }
                 }
                 AddErrors(result);
             }
-
             ViewData["ReturnUrl"] = returnUrl;
             return View(nameof(ExternalLogin), model);
         }
@@ -246,7 +248,7 @@ namespace FicBook.Controllers
         {
             if (userId == null || code == null)
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(PostsController.Index), "Home");
             }
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)

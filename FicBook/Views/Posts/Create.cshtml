@@ -59,31 +59,10 @@
 </form>
        @section Scripts {
        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-        <script>
-            Dropzone.autoDiscover = false;
-            var myDropzone = new Dropzone('#uploader', {
-                url: '/Posts/UploadImageAsync',
-                maxFilesize: 5,
-                maxFiles: 1,
-                uploadMultiple: false,
-                parallelUploads: 1,
-                acceptedFiles: "image/*",
-                autoProcessQueue: true,
-                init: function () {
-
-                    var startUpload = document.getElementById("button");
-                    myDropzone = this;
-                  
-                    this.on("success", function () {
-                        myDropzone.options.autoProcessQueue = true;
-                    });
-                }
-            });
-        </script>
-           <script>
+       <script>tinymce.init({ selector: 'textarea' });</script>
+<script>
                $('#list li a').on('click', function () {
                    $('#datebox').val($(this).html());
-               }); 
-           </script>
+               });
+</script>
         }

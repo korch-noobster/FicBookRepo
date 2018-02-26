@@ -1,17 +1,30 @@
 ﻿@model FicBook.Models.Post
 @using FicBook.Data
-@using FicBook.Data
 @inject ApplicationDbContext contetxt
 @{
     ViewData["Title"] = "Add chapter";
 }
+<h4>Edit</h4>
+<hr />
 
+<div>
+    <label class="control-label ">"NewPhoto"</label>
+    <div id="dropzone">
+        <form action="/Posts/UploadImageAsync"  class="dropzone needsclick dz-clickable" id="uploader">
+            <input type="hidden" value="@Model.Id" />
+            <div class="dz-message needsclick">
+                "DragNDrop"<br>
+            </div>
+        </form>
+    </div>
+ </div>
+<br />
 <form asp-action="Edit">
     <div class="form-horizontal">
-    <h4>Edit</h4>
-    <hr />
+   
     @if (Model.Id == Model.ParentId)
     {
+
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="Title" class="col-md-2 control-label"></label>
@@ -97,8 +110,8 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 
-
-    <script>
+<script>tinymce.init({ selector: 'textarea' });</script>
+  <script>
             Dropzone.autoDiscover = false;
             var myDropzone = new Dropzone('#uploader', {
                 url: '/Posts/UploadImageAsync',
@@ -112,15 +125,14 @@
 
                     var startUpload = document.getElementById("button");
                     myDropzone = this;
-                    startUpload.addEventListener("click", function () {
-                        myDropzone.processQueue();
-                    });
+
                     this.on("success", function () {
+                      // formData.append("post",@Model.Id)
                         myDropzone.options.autoProcessQueue = true;
                     });
                 }
             });
-    </script>
+</script>
 <script>
             $('#list li a').on('click', function () {
                 $('#datebox').val($(this).html());

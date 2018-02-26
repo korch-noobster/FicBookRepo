@@ -8,14 +8,13 @@ namespace FicBook.Models.ManageViewModels
 {
     public class IndexViewModel
     {
+        [Required]
+        [StringLength(15, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
         public string Username { get; set; }
-
-        [Display(Name = "New Username")]
-        public string NewUsername { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
 
-        [Required]
+      
         [EmailAddress]
         public string Email { get; set; }
 

@@ -1,15 +1,14 @@
-﻿
+﻿@model IEnumerable<FicBook.Models.Post>
+@using FicBook.Data
+@inject ApplicationDbContext _context
 @{
-    Layout = null;
+    ViewData["Title"] = Context.Request.Query["genre"];
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>DisplaySingleGenre</title>
-</head>
-<body>
-</body>
-</html>
+<h3>This is what we have been writing...</h3>
+<div class="container">
+    <ul class="col-md-8 list-unstyled article-list">
+            <li class="row">
+                @await Component.InvokeAsync("CategoryPosts", new { category= Context.Request.Query["genre"].ToString() })
+            </li>
+</ul>
+</div>

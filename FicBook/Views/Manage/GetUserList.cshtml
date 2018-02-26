@@ -14,9 +14,9 @@
         if (UserManager.GetUserName(User) != user.UserName)
         {
         <tr>
-            <td>@user.Email</td>
+            <td>@user.UserName</td>
             <td>
-                <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-userid="@user.Id">Edit</a>
+             
               @if(await UserManager.IsInRoleAsync(user,"Author"))
                 {
                 <a class="btn btn-sm btn-success" asp-action="SetAdmin" asp-route-userid="@user.Id">Set as Admin</a>

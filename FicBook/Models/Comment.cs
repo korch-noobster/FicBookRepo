@@ -14,9 +14,7 @@ namespace FicBook.Models
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        public Post Post { get; set; }
-
-        public String PostFk { get; set; }
+        public string PostId { get; set; }
 
         [Required]
         public string Text { get; set; }

@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
+using RotativaCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +24,7 @@ using WkWrap.Core;
 
 namespace FicBook.Controllers
 {
+    [Authorize(Roles = "Admin,Author")]
     public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -34,34 +37,23 @@ namespace FicBook.Controllers
             _userManager = userManager;
             _viewRenderService = viewRenderService;
         }
-        /*
-        public IActionResult Pdf(PdfViewModel model)
+
+
+
+      
+        public ActionResult DownloadPdf(string Id)
         {
-            return View(model);
+            var applicationDbContext = _context.Posts.Include(a => a.Author).Where(a => a.ParentId == Id);
+            return View(applicationDbContext.ToList());
         }
-        public async Task<IActionResult> DownloadPdf(string id)
+       
+        public ActionResult TestViewWithModel(string post)
         {
-            var model = new PdfViewModel()
-            {
-               Fanfik = _context.Posts
-               // .Include(f => f.Chapters)
-                .Include(f => f.Author)
-                .FirstOrDefault(f => f.Id == id)
-            };
+            
+               return new RouteAsPdf(post);
+        }
 
-            var htmlContent = await _viewRenderService.RenderToStringAsync("Posts/Pdf", model);
-            var wkhtmltopdf = new FileInfo(@"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe");
-            var converter = new HtmlToPdfConverter(wkhtmltopdf);
-            var pdfBytes = converter.ConvertToPdf(htmlContent);
-
-            FileResult fileResult = new FileContentResult(pdfBytes, "application/pdf")
-            {
-              FileDownloadName = model.Fanfik.Title
-            };
-            return fileResult;
-        }*/
-
-        [Authorize]
+  
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -78,7 +70,7 @@ namespace FicBook.Controllers
             return View(article);
         }
 
-        [Authorize]
+      
         [HttpPost]
         public async Task<IActionResult> Edit(Post post)
         {
@@ -105,30 +97,37 @@ namespace FicBook.Controllers
         }
     
         [HttpPost]
+
         public async Task<IActionResult> AddComment(string postId,Post post)
         {
             var commentedPost = await _context.Posts.SingleOrDefaultAsync(m => m.Id == postId);
-            //var commentAdded =_context.Comments.Add(new Comment() { Text = post.Comment, CreatedDate = DateTime.UtcNow, Author = await _userManager.GetUserAsync(User) });
-            commentedPost.Comments.Add(new Comment() {
+            _context.Comments.Add(new Comment() {
                 Text = post.Comment,
                 CreatedDate = DateTime.UtcNow,
                 Author = await _userManager.GetUserAsync(User) ,
-                Post =commentedPost,
-                PostFk =post.ParentId
+                PostId =commentedPost.ParentId,
             });
             _context.SaveChanges();
             return Redirect("Details/"+postId);
         }
 
-        [Authorize]
+
+
         public IActionResult AddChapter()
         {
             return View();
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult > DisplaySingleGenre()
+        {
+            var applicationDbContext = _context.Posts.Include(a => a.Author);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+ 
         public async Task<IActionResult> AddChapter([Bind( "Title,Content,ParentId")] Post post)
         {
             if (ModelState.IsValid)
@@ -144,50 +143,53 @@ namespace FicBook.Controllers
             }
             return View(post);
         }
-      
-        public async Task<IActionResult> UploadImageAsync(IList<IFormFile> files)
-         {
 
-             try
-             {
-                 var user = await _userManager.GetUserAsync(User);
-                 var client = new ImgurClient("556830a80ac5829", "9438948e5e7df4b5151a61b882626c499ef4925e");
-                 var endpoint = new ImageEndpoint(client);
-                 IImage image;
-                 foreach (var file in files)
-                 {
-                     if (file.Length > 0)
-                     {
-                         user.AskVerified = true;
-                         using (var fileStream = file.OpenReadStream())
-                         using (var ms = new MemoryStream())
-                         {
-                             fileStream.CopyTo(ms);
-                             var fileBytes = ms.ToArray();
-                             string s = Convert.ToBase64String(fileBytes);
-                             image = await endpoint.UploadImageBinaryAsync(fileBytes);
-                         }
-                         Debug.Write("Image uploaded. Image Url: " + image.Link);
-                        ViewBag.img = image.Link;
-                         return  Content(image.Link);
-                     }
-                 }
-             }
-             catch (ImgurException imgurEx)
-             {
-                 Debug.Write("An error occurred uploading an image to Imgur.");
-                 Debug.Write(imgurEx.Message);
-               
-             }
-            return null;
-        }
-       
+
+        /* public async Task<IActionResult> UploadImageAsync(IList<IFormFile> files, string post)
+          {
+
+              try
+              {
+                  var user = await _userManager.GetUserAsync(User);
+                  var client = new ImgurClient("556830a80ac5829", "9438948e5e7df4b5151a61b882626c499ef4925e");
+                  var endpoint = new ImageEndpoint(client);
+                  IImage image;
+                  foreach (var file in files)
+                  {
+                      if (file.Length > 0)
+                      {
+                          user.AskVerified = true;
+                          using (var fileStream = file.OpenReadStream())
+                          using (var ms = new MemoryStream())
+                          {
+                              fileStream.CopyTo(ms);
+                              var fileBytes = ms.ToArray();
+                              string s = Convert.ToBase64String(fileBytes);
+                              image = await endpoint.UploadImageBinaryAsync(fileBytes);
+                          }
+                          Debug.Write("Image uploaded. Image Url: " + image.Link);
+                         ViewBag.img = image.Link;
+
+                      }
+                  }
+              }
+              catch (ImgurException imgurEx)
+              {
+                  Debug.Write("An error occurred uploading an image to Imgur.");
+                  Debug.Write(imgurEx.Message);
+
+              }
+             return null;
+         }*/
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Posts.Include(a => a.Author);
             return View(await applicationDbContext.ToListAsync());
         }
-       [HttpPost]
+
+        [HttpPost]
+        [AllowAnonymous]
         public IActionResult SetLanguage(string page)
         {
             string culture = CultureInfo.CurrentCulture.Name == "ru" ? "en" : "ru";
@@ -200,6 +202,7 @@ namespace FicBook.Controllers
             return Redirect(page);
         }
 
+        [AllowAnonymous]
         public IActionResult ChangeTheme(string page)
         {
             
@@ -221,6 +224,7 @@ namespace FicBook.Controllers
             return Redirect(page);
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -234,11 +238,11 @@ namespace FicBook.Controllers
             {
                 return NotFound();
             }
-
+           
             return View(post);
         }
 
-        [Authorize]
+      
         public IActionResult Create()
         {
             return View();
@@ -246,16 +250,19 @@ namespace FicBook.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+     
         public async Task<IActionResult> Create([Bind("Title, Abstract,Content,Genre,TagString")] Post post)
         {
             if (ModelState.IsValid)
             {
                 char[] delimeterChars = {' ', ',' };
-                string[] words = post.TagString.Split(delimeterChars);
-                foreach(var word in words)
+                if (post.TagString != null)
                 {
-                    post.Tags.Add(new Tag() { Name = word });
+                    string[] words = post.TagString.Split(delimeterChars);
+                    foreach (var word in words)
+                    {
+                        post.Tags.Add(new Tag() { Name = word });
+                    }
                 }
                 if (post.Picture == null)
                 {
@@ -273,7 +280,7 @@ namespace FicBook.Controllers
             return View(post);
         }
 
-        [Authorize]
+ 
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -292,11 +299,10 @@ namespace FicBook.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             
-            var article = await _context.Posts.SingleOrDefaultAsync(m => m.Id == id);
+            var article = await _context.Posts.Include(a=>a.Tags).Include(a=>a.Comments).SingleOrDefaultAsync(m => m.Id == id);
             if (article.ParentId == article.Id)
             {
                 foreach (var remove in _context.Posts)
@@ -311,6 +317,6 @@ namespace FicBook.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        
     }
 }

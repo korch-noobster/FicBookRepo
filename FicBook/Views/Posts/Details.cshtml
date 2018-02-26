@@ -4,7 +4,10 @@
 @inject ApplicationDbContext _context
 @{
     ViewData["Title"] = Model.Title;
+   
 }
+<br />
+<br />
 <div class="article-page container">
     <div class="col-md-8 article-details">
 
@@ -31,29 +34,31 @@
                     <ul class="dropdown-menu">
                         <li><a asp-action="Edit"asp-route-Id="@Model.Id">Edit current chapter</a></li>
                         <li><a asp-action="Delete" asp-route-id="@Model.Id">Delete</a></li>
+                        <li><a asp-action="DownloadPdf" asp-route-Id="@Model.ParentId">Download pdf</a></li>
                     </ul>
                 </div>
             </div>
            }
             <div class="row">
                 @await Component.InvokeAsync("LatestPosts", new { howMany = 3 })
+                <div>
+
+                    @foreach (var Chapters in _context.Posts.OrderBy(a => a.CreatedDate))
+                    {
+
+                        if (Chapters.ParentId.Trim().Equals(Model.ParentId.Trim()))
+                        {
+                            <a asp-action="Details" asp-route-id="@Chapters.Id">Go to @Chapters.Title chapter</a>
+                            <br />
+                        }
+                    }
+                    <br />
+                    <a asp-action="Index">Back to List</a>
+                </div>
             </div>
         </div>
     </div>
-    <div>
-        
-      @foreach (var Chapters in _context.Posts.OrderBy(a=>a.CreatedDate))
-      {
-          
-          if (Chapters.ParentId.Trim().Equals(Model.ParentId.Trim()))
-          {
-            <a asp-action="Details" asp-route-id="@Chapters.Id">Go to @Chapters.Title chapter</a>
-            <br />
-          }
-      }
-        <br />
-        <a asp-action="Index">Back to List</a>
-    </div>
+  
     
     <div class="col-md-8 article-details">
     
