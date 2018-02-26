@@ -16,6 +16,10 @@ namespace FicBook.Models
 
         public string PostId { get; set; }
 
+        public int Likes { get; set; } = 0;
+
+        public List<ApplicationUser> Liked { get; set; } = new List<ApplicationUser>();
+
         [Required]
         public string Text { get; set; }
 

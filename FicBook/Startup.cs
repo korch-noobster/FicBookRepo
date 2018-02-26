@@ -48,7 +48,8 @@ namespace FicBook
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-      
+            services.AddScoped<IViewRenderService, ViewRenderService>();
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddMvc()

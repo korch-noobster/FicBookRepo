@@ -4,15 +4,18 @@
 @inject ApplicationDbContext _context
 @{
     ViewData["Title"] = Model.Title;
-   
+
 }
 <br />
 <br />
 <div class="article-page container">
-    <div class="col-md-8 article-details">
-
+    <div  class="col-md-8 article-details">
+        @{
+            var img = _context.Posts.SingleOrDefault(a => a.Id == a.ParentId);
+            <div align="center"> <img src="@img.Picture"  /></div>
+        }
         @Html.Partial("_PostSummary", Model)
-        <strong>@Model.Title</strong>
+        <div align="center"><strong>@Model.Title</strong></div>
         <hr />
         <markdown source="@Model.Content"></markdown>
     </div>
@@ -34,7 +37,7 @@
                     <ul class="dropdown-menu">
                         <li><a asp-action="Edit"asp-route-id="@Model.Id">Edit current chapter</a></li>
                         <li><a asp-action="Delete" asp-route-id="@Model.Id">Delete</a></li>
-                        <li><a asp-action="DownloadPdf" asp-route-Id="@Model.ParentId">Download pdf</a></li>
+                        <li><a asp-action="DownloadPdf" asp-route-id="@Model.ParentId">Download pdf</a></li>
                     </ul>
                 </div>
             </div>
@@ -42,15 +45,13 @@
             <div class="row">
                 @await Component.InvokeAsync("LatestPosts", new { howMany = 3 })
                 <div>
-
-                    @foreach (var Chapters in _context.Posts.OrderBy(a => a.CreatedDate))
+                    @{ int counter = 0;}
+                    @foreach (var chapters in _context.Posts.Where(a=>a.ParentId.Trim().Equals(Model.ParentId.Trim())).OrderBy(a => a.CreatedDate))
                     {
-
-                        if (Chapters.ParentId.Trim().Equals(Model.ParentId.Trim()))
-                        {
-                            <a asp-action="Details" asp-route-id="@Chapters.Id">Go to @Chapters.Title chapter</a>
+                        counter++;
+                            <a asp-action="Details" asp-route-id="@chapters.Id"><strong>Go to chapter nuber @counter :</strong> @chapters.Title </a>
                             <br />
-                        }
+                        
                     }
                     <br />
                     <a asp-action="Index">Back to List</a>

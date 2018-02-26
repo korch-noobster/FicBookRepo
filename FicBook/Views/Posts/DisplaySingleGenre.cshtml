@@ -8,7 +8,7 @@
 <div class="container">
     <ul class="col-md-8 list-unstyled article-list">
             <li class="row">
-                @await Component.InvokeAsync("CategoryPosts", new { category= Context.Request.Query["genre"].ToString() })
+                @await Component.InvokeAsync("CategoryPosts", new { category= Context.Request.Query["genre"].ToString(), howMany=10})
             </li>
 </ul>
 </div>

@@ -39,21 +39,31 @@ namespace FicBook.Controllers
         }
 
 
-
-      
-        public ActionResult DownloadPdf(string Id)
+        
+        public IActionResult Pdf(List<Post> model)
         {
-            var applicationDbContext = _context.Posts.Include(a => a.Author).Where(a => a.ParentId == Id);
-            return View(applicationDbContext.ToList());
-        }
-       
-        public ActionResult TestViewWithModel(string post)
-        {
+            return View(model);
             
-               return new RouteAsPdf(post);
+        }
+        
+        public async Task<IActionResult> DownloadPdf(string id)
+        {
+            var title = _context.Posts.FirstOrDefault(a => a.Id == id);
+            var model = _context.Posts.Include(a => a.Author).Where(a => a.ParentId == id).ToList();
+
+            var htmlContent = await _viewRenderService.RenderToStringAsync("Posts/Pdf", model);
+            var wkhtmltopdf = new FileInfo(@"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe");
+            var converter = new HtmlToPdfConverter(wkhtmltopdf);
+            var pdfBytes = converter.ConvertToPdf(htmlContent);
+
+            FileResult fileResult = new FileContentResult(pdfBytes, "application/pdf")
+            {
+                FileDownloadName = title.Title
+            };
+            return fileResult;
         }
 
-  
+        
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -97,7 +107,23 @@ namespace FicBook.Controllers
         }
     
         [HttpPost]
+        public async Task<IActionResult> AddLike(string Id,string postId)
+        {
+         
+            var comment = _context.Comments.Include(a=>a.Author).Include(a=>a.Liked).SingleOrDefault(m => m.Id == Id);
+            foreach(var user in comment.Liked.Where(a=>a.Id== _userManager.GetUserId(User)))
+            {
+                    return RedirectToAction("Details/" + postId);
+            }
+            comment.Likes += 1;
+            comment.Liked.Add(await _userManager.GetUserAsync(User));
+            _context.SaveChanges();
+            return RedirectToAction("Details/" + postId);
+        }
 
+      
+
+        [HttpPost]
         public async Task<IActionResult> AddComment(string postId,Post post)
         {
             var commentedPost = await _context.Posts.SingleOrDefaultAsync(m => m.Id == postId);
@@ -145,10 +171,10 @@ namespace FicBook.Controllers
         }
 
 
-        /* public async Task<IActionResult> UploadImageAsync(IList<IFormFile> files, string post)
+         public async Task<IActionResult> UploadImageAsync(IList<IFormFile> files)
           {
-
-              try
+            var id = HttpContext.Request.Query["id"].ToString();
+            try
               {
                   var user = await _userManager.GetUserAsync(User);
                   var client = new ImgurClient("556830a80ac5829", "9438948e5e7df4b5151a61b882626c499ef4925e");
@@ -168,8 +194,9 @@ namespace FicBook.Controllers
                               image = await endpoint.UploadImageBinaryAsync(fileBytes);
                           }
                           Debug.Write("Image uploaded. Image Url: " + image.Link);
-                         ViewBag.img = image.Link;
-
+                        var current = _context.Posts.SingleOrDefault(a => a.Id == id);
+                        current.Picture = image.Link;
+                        _context.SaveChanges();
                       }
                   }
               }
@@ -180,7 +207,8 @@ namespace FicBook.Controllers
 
               }
              return null;
-         }*/
+         }
+
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
@@ -302,13 +330,21 @@ namespace FicBook.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             
-            var article = await _context.Posts.Include(a=>a.Tags).Include(a=>a.Comments).SingleOrDefaultAsync(m => m.Id == id);
+            var article = await _context.Posts.Include(a=>a.Tags).Include(a=>a.Comments).Include(a=>a.Author).SingleOrDefaultAsync(m => m.Id == id);
+            foreach(var comment in article.Comments)
+            {
+                _context.Remove(comment);
+            }
             if (article.ParentId == article.Id)
             {
                 foreach (var remove in _context.Posts)
+                {
                     if (remove.ParentId == article.Id)
-                        _context.Posts.Remove(article);
-
+                    {
+                        _context.Posts.Remove(remove);
+                    }
+                }
+                _context.Posts.Remove(article);
             }
             else
             {

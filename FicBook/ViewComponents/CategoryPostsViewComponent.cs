@@ -17,11 +17,12 @@ namespace FicBook.ViewComponents
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string category)
+        public async Task<IViewComponentResult> InvokeAsync(string category,int howMany)
         {
             var lastPost = await _context.Posts
                                             .Where(a => a.Genre == category)
                                             .Include(a => a.Author)
+                                            .Take(howMany)
                                             .ToListAsync();
                                             
             return View(lastPost);

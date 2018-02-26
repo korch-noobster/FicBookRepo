@@ -8,7 +8,7 @@
         <h2>Comments</h2>
         @foreach (var comment in _context.Comments)
         {
-            if (comment.PostId.Trim() == Model.ParentId.Trim() && Model.Comments.SingleOrDefault(m => m.CreatedDate  == comment.CreatedDate)==null)
+            if (comment.PostId.Trim() == Model.ParentId.Trim() && Model.Comments.SingleOrDefault(m => m.Id  == comment.Id)==null)
             {
                 Model.Comments.Add(comment);
             }
@@ -21,14 +21,23 @@
         {
             foreach (var comment in Model.Comments.OrderBy(a => a.CreatedDate))
             {
+               
                 <img src=@comment.Author.ProfilePicture class="img-circle" alt="Pikcha" height="50" width="50" />
                 <label>@comment.Text</label>
                 @Html.Raw(comment.CreatedDate)
                 <br />
                 <strong> @Html.Raw(comment.Author.UserName)</strong>
+                <div>
+                    <form asp-action="AddLike" asp-route-Id="@comment.Id" asp-route-postId="@Model.ParentId" method="post">
+                        @Html.Raw(comment.Likes)
+                        <button type="submit" class="btn btn-link">
+                            <span class="glyphicon glyphicon-heart"></span>
+                        </button>
+                    </form>
+                </div>
                 <br />    
                 <br />
-
+                
             }
         }
     </div>

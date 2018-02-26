@@ -230,8 +230,9 @@ namespace FicBook.Controllers
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
                         await _userManager.AddToRoleAsync(user, "Author");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return RedirectToLocal(returnUrl);
                     }

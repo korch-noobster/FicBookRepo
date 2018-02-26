@@ -1,0 +1,20 @@
+﻿@model IEnumerable<FicBook.Models.Post>
+<head>
+    <meta charset="utf-8" />
+</head>
+@{
+    Layout = null;
+
+    var image = Model.SingleOrDefault(a => a.Id == a.ParentId);
+    <div align="center">  <img src=@image.Picture align="middle" /></div>
+
+    foreach (var post in Model.OrderBy(a => a.CreatedDate))
+    {
+
+        <div align="center"><strong>@post.Title</strong></div>
+        <br />
+        <markdown  source="@post.Content"></markdown>
+
+        }
+
+    }

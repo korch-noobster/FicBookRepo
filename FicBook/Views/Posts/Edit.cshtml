@@ -7,11 +7,10 @@
 <h4>Edit</h4>
 <hr />
 
-<div>
+<div style="margin-left:200px">
     <label class="control-label ">"NewPhoto"</label>
     <div id="dropzone">
-        <form action="/Posts/UploadImageAsync"  class="dropzone needsclick dz-clickable" id="uploader">
-            <input type="hidden" value="@Model.Id" />
+        <form action="/Posts/UploadImageAsync?id=@Model.ParentId"  class="dropzone needsclick dz-clickable" id="uploader">
             <div class="dz-message needsclick">
                 "DragNDrop"<br>
             </div>
@@ -114,7 +113,7 @@
   <script>
             Dropzone.autoDiscover = false;
             var myDropzone = new Dropzone('#uploader', {
-                url: '/Posts/UploadImageAsync',
+                url: '/Posts/UploadImageAsync?id=@Model.ParentId',
                 maxFilesize: 5,
                 maxFiles: 1,
                 uploadMultiple: false,
@@ -122,12 +121,10 @@
                 acceptedFiles: "image/*",
                 autoProcessQueue: true,
                 init: function () {
-
                     var startUpload = document.getElementById("button");
                     myDropzone = this;
 
                     this.on("success", function () {
-                      // formData.append("post",@Model.Id)
                         myDropzone.options.autoProcessQueue = true;
                     });
                 }
