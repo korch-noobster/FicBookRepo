@@ -25,7 +25,7 @@
                     }
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-primary" asp-controller="Posts" asp-action="Edit" asp-route-userid="@post.Id">Edit</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">Edit</a>
                     @if (post.Id == post.ParentId)
                     {
                     <a class="btn btn-success" asp-controller="Posts" asp-action="AddChapter" asp-route-id="@post.Id">Add new chapter</a>

@@ -90,19 +90,18 @@ namespace FicBook.Controllers
             }
         }
 
-        public async Task<IActionResult> Delete(string userId)
+        public async Task<IActionResult> Delete(string id)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(id);
             await _userManager.DeleteAsync(user);
-            return RedirectToAction("UserList");
-
+            return RedirectToAction(nameof(GetUserList));
         }
-
-        public async Task<IActionResult> ChangeLockout(string userId)
+        
+        public async Task<IActionResult> ChangeLockout(string id)
         {
             var lockoutEndDate = new DateTime(2999, 01, 01);
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(id);
             if (user.LockoutEnabled)
             {
                 await _userManager.SetLockoutEnabledAsync(user, false);
@@ -112,15 +111,16 @@ namespace FicBook.Controllers
                 await _userManager.SetLockoutEnabledAsync(user, true);
                 await  _userManager.SetLockoutEndDateAsync(user, lockoutEndDate);
             }
-            return RedirectToAction("UserList");
+            return RedirectToAction(nameof(GetUserList));
         }
-        [Authorize]
-        public async Task<IActionResult> SetAdmin(string userId)
+        [Authorize(Roles ="Admin")]
+      
+        public async Task<IActionResult> SetAdmin(string id)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(id);
             await _userManager.RemoveFromRoleAsync(user, "Author");
             await _userManager.AddToRoleAsync(user, "Admin");
-            return RedirectToAction("UserList");
+            return RedirectToAction(nameof(GetUserList));
         }
         
 
